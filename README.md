@@ -1,0 +1,1 @@
+page-shots allows you to take screenshots of one or more URLs at multiple sizes.

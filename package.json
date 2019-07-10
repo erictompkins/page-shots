@@ -1,0 +1,42 @@
+{
+  "name": "page-shots",
+  "version": "0.1.0",
+  "description": "Take screenshots of multiple pages and in multiple sizes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://erictompkins@github.com/aptuitiv/page-shots.git"
+  },
+  "keywords": [
+    "page",
+		"website",
+		"site",
+		"web",
+		"url",
+		"resolution",
+		"screenshot",
+		"screenshots",
+		"screengrab",
+		"screen",
+		"snapshot",
+		"shot",
+		"image",
+		"render",
+		"html",
+		"capture",
+		"pic",
+		"picture"
+  ],
+  "author": "Eric Tompkins",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aptuitiv/page-shots/issues"
+  },
+  "homepage": "https://github.com/aptuitiv/page-shots#readme",
+  "devDependencies": {
+    "nightmare": "^3.0.2"
+  }
+}
