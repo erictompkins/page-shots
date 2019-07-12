@@ -39,6 +39,9 @@
     "pic",
     "picture"
   ],
+  "engines": {
+    "node": ">=8"
+  },
   "author": {
     "name": "Eric Tompkins"
   },
