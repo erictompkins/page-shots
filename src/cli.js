@@ -79,7 +79,6 @@ async function cli() {
         if (program.quality) {
             pageShots.setQuality(program.quality);
         }
-        console.log('clipX: ', program.clipX);
         if (
             typeof program.clipX !== 'undefined' 
             && typeof program.clipY !== 'undefined'
