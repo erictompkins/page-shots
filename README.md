@@ -45,29 +45,22 @@ npm install -g page-shots
 Command Line Options
 -----------------
 
-<span class="toc" markdown="1">
+| Argument                 | Description |
+| :----------------------- | :---------- |
+| <pre>-d, --dir</pre>     | The directory relative to where the script is run to output the screenshots to. |
+| <pre>-f, --fit</pre>     | Fit the screenshot to the provided height and width. |
+| <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Defaults to 900 |
+| <pre>-n, --name</pre>    | The name of the file to save the screenshot as. Only applies to the first URL so it's only useful if getting just one screenshot. |
+| <pre>-t, --type</pre>    | The file type to use for the screenshots. "jpg" or "png". Defaults to "jpg". |
+| <pre>-q, --quality</pre> | The quality of the jpg image, between 0-100. Not applicable to png image. Defaults to 100 |
+| <pre>-u, --url</pre>     | URL to get the screenshot of. You can specify this parameter multiple times to get a screenshot of multiple web pages. |
+| <pre>-W, --width</pre>   | Integer width of the viewport to take the screenshot in. Defaults to 1300 |
+| <pre>-v, --version</pre> | Output the version number |
+| <pre>--clipH</pre>       | The height of the clip area. |
+| <pre>--clipW</pre>       | The width of the clip area. |
+| <pre>--clipX</pre>       | The x-coordinate of top-left corner of clip area. |
+| <pre>--clipY</pre>       | The y-coordinate of top-left corner of clip area. |
 
-| Argument                | Description |
-| :---------------------- | :---------- |
-| -d, --dir <string>      | The directory relative to where the script is run to output the screenshots to. |
-| -f, --fit               | Fit the screenshot to the provided height and width. |
-| -H, --height <integer>  | Integer height of the viewport to take the screenshot in. Defaults to 900 |
-| -n, --name <string>     | The name of the file to save the screenshot as. Only applies to the first URL so it's only useful if getting just one screenshot. |
-| -t, --type <string>     | The file type to use for the screenshots. "jpg" or "png". Defaults to "jpg". |
-| -q, --quality <integer> | The quality of the jpg image, between 0-100. Not applicable to png image. Defaults to 100 |
-| -u, --url <string>      | URL to get the screenshot of. You can specify this parameter multiple times to get a screenshot of multiple web pages. |
-| -W, --width <integer>   | Integer width of the viewport to take the screenshot in. Defaults to 1300 |
-| -v, --version           | Output the version number |
-| --clipH <integer>       | The height of the clip area. |
-| --clipW <integer>       | The width of the clip area. |
-| --clipX <integer>       | The x-coordinate of top-left corner of clip area. |
-| --clipY <integer>       | The y-coordinate of top-left corner of clip area. |
-
-</span>
-
-<style>
-.toc th:first-child, .toc td:first-child {width: 150px;}
-</style>
 
 Filenames and Directories
 -----------------
