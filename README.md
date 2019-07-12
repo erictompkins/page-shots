@@ -45,7 +45,7 @@ npm install -g page-shots
 Command Line Options
 -----------------
 
-<div class="toc">
+<span class="toc">
 
 | Argument                | Description |
 | :---------------------- | :---------- |
@@ -63,7 +63,8 @@ Command Line Options
 | --clipX <integer>       | The x-coordinate of top-left corner of clip area. |
 | --clipY <integer>       | The y-coordinate of top-left corner of clip area. |
 
-</div>
+</span>
+
 <style>
 .toc th:first-child, .toc td:first-child {width: 150px;}
 </style>
