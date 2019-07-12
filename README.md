@@ -45,7 +45,8 @@ npm install -g page-shots
 Command Line Options
 -----------------
 
-| Argument | Description |
+
+| Argument <img width="100" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==">| Description |
 | :------- | :---------- |
 | -d, --dir <string> | The directory relative to where the script is run to output the screenshots to. |
 | -f, --fit | Fit the screenshot to the provided height and width. |
