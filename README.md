@@ -45,7 +45,7 @@ npm install -g page-shots
 Command Line Options
 -----------------
 
-<span class="toc">
+<span class="toc" markdown="1">
 
 | Argument                | Description |
 | :---------------------- | :---------- |
