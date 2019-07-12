@@ -21,18 +21,18 @@ function collect(val, values) {
 program
   .version(pkg.version, '-v, --version')
   .description(pkg.description)
-  .option('-u, --url <string>', 'URL to get the screenshot of.', collect, [])
   .option('-d, --dir <string>', 'The directory relative to where the script is run to output the screenshots to.')
-  .option('-H, --height <integer>', 'Integer height of the viewport to take the screenshot in.', 900)
-  .option('-W, --width <integer>', 'Integer width of the viewport to take the screenshot in.', 1300)
   .option('-f, --fit', 'Fit the screenshot to the provided height and width.')
-  .option('-t, --type <string>', 'The file type to use for the screenshots. "jpg" or "png"', 'jpg')
-  .option('-q, --quality <integer>', 'The quality of the jpg image, between 0-100. Not applicable to png image.', 100)
+  .option('-H, --height <integer>', 'Integer height of the viewport to take the screenshot in.', 900)
   .option('-n, --name <string>', 'The name of the file to save the screenshot as. Only applies to the first URL.')
-  .option('--clipX <integer>', 'The x-coordinate of top-left corner of clip area.')
-  .option('--clipY <integer>', 'The y-coordinate of top-left corner of clip area.')
+  .option('-q, --quality <integer>', 'The quality of the jpg image, between 0-100. Not applicable to png image.', 100)
+  .option('-t, --type <string>', 'The file type to use for the screenshots. "jpg" or "png"', 'jpg')
+  .option('-u, --url <string>', 'URL to get the screenshot of.', collect, [])
+  .option('-W, --width <integer>', 'Integer width of the viewport to take the screenshot in.', 1300)
+  .option('--clipH <integer>', 'The height of clip area.')
   .option('--clipW <integer>', 'The width of clip area.')
-  .option('--clipH <integer>', 'The height of clip area.');  
+  .option('--clipX <integer>', 'The x-coordinate of top-left corner of clip area.')
+  .option('--clipY <integer>', 'The y-coordinate of top-left corner of clip area.');
 
 // Output some additional examples
 program.on('--help', function() {
