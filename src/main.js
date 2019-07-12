@@ -213,13 +213,17 @@ class PageShots {
                 
                 if (url.type !== 'pdf') {
                     // Save image screenshot
-                    spinner = ora({text: 'Starting screenshot ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)', spinner: 'arc'}).start();
+                    spinner = ora({text: 'Starting ' + url.type + ' screenshot ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)', spinner: 'arc'}).start();
                     await this.page.setViewport(this._getViewportConfig(url));
                     await this.page.screenshot(this._getScreenshotConfig(url));
                     spinner.succeed(chalk.green('Saved ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)'));
                 } else {
                     // Save PDF
+                    spinner = ora({text: 'Starting PDF screenshot ' + url.path, spinner: 'arc'}).start();
+                    await this.page.setViewport(this._getViewportConfig(url));
+                    await this.page.emulateMedia('screen');
                     await this.page.pdf(this._getPdfConfig(url));
+                    spinner.succeed(chalk.green('Saved PDF ' + url.path));
                 }
                 console.log('');
             }
@@ -480,7 +484,6 @@ class PageShots {
             config.fullPage = false;
             config.clip = url.clip;
         }
-        console.log('config: ', config);
         return config;
     }
 
@@ -490,7 +493,8 @@ class PageShots {
      */
     _getPdfConfig(url) {
         let config = {
-            path: url.path
+            path: url.path,
+            preferCSSPageSize: true
         };
         return config;
     }
