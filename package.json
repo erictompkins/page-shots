@@ -4,7 +4,7 @@
   "description": "Take screenshots of multiple pages and in multiple sizes",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "bin": {
     "page-shots": "bin/page-shots.js"
@@ -57,5 +57,10 @@
     "ora": "^3.4.0",
     "puppeteer": "^1.18.1",
     "sanitize-filename": "^1.6.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^6.1.4"
   }
 }
