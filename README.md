@@ -5,7 +5,6 @@ Page Shots is a command line interface for taking screenshots of one or more pag
 
 [![NPM version][shield-npm]][info-npm]
 [![Node.js version support][shield-node]][info-node]
-[![Build status][shield-build]][info-build]
 [![LGPL-3.0 licensed][shield-license]][info-license]
 
 On the command line:
