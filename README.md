@@ -51,7 +51,9 @@ Command Line Options
 | <pre>-d, --dir</pre>     | The directory relative to where the script is run to output the screenshots to. |
 | <pre>-f, --fit</pre>     | Fit the screenshot to the provided height and width. |
 | <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Defaults to 900 |
+| <pre>--jpg</pre>         | Set the image type for screenshots to be "jpg". Alternate method to using -t. |
 | <pre>-n, --name</pre>    | The name of the file to save the screenshot as. Only applies to the first URL so it's only useful if getting just one screenshot. |
+| <pre>--png</pre>         | Set the image type for screenshots to be "png". Alternate method to using -t. |
 | <pre>-t, --type</pre>    | The file type to use for the screenshots. "jpg" or "png". Defaults to "jpg". |
 | <pre>-q, --quality</pre> | The quality of the jpg image, between 0-100. Not applicable to png image. Defaults to 100 |
 | <pre>-u, --url</pre>     | URL to get the screenshot of. You can specify this parameter multiple times to get a screenshot of multiple web pages. |
