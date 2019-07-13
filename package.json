@@ -2,7 +2,7 @@
   "name": "page-shots",
   "version": "0.3.0",
   "description": "Take screenshots of multiple pages and in multiple sizes",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha"
   },
