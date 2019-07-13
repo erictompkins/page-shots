@@ -157,7 +157,7 @@ page-shots -u https://www.branchcms.com -W 1200 --clipH 400 --clipW 900 --clipX 
 License
 -------
 
-Page Shots is licensed under the [MIT][info-license].
+Page Shots is licensed under the [MIT][info-license] license.
 
 
 [node]: http://nodejs.org/
