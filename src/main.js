@@ -16,6 +16,7 @@ class PageShots {
      * Constructor
      */
     constructor() {
+        this.baseUrl = '';
         // The directory that screenshots are saved in
         this.dir = '';
         // The list of URLs to get screenshots for
@@ -55,12 +56,27 @@ class PageShots {
     }
 
     /**
+     * Sets the base URL.
+     * This is not required, but if it's set, then the base URL will be
+     * prepended to all other URLs
+     * @param {string} url The base URL
+     */
+    setBaseUrl(url) {
+        if (typeof url === 'string' && url.length > 1) {
+            if (url.substring(url.length -1) == '/') {
+                url = url.substring(0, url.length -1);
+            }
+            this.baseUrl = url.trim();
+        }
+    }
+
+    /**
      * Set the directory to output the screenshots to
      * @param {string} dir The directory relative to where the script is run to output the screenshots to
      */
     setDir(dir) {
         if (typeof dir === 'string' && dir.length > 0) {
-            this.dir = dir;
+            this.dir = dir.trim();
         }
     }
 
@@ -218,9 +234,10 @@ class PageShots {
                     await this.page.screenshot(this._getScreenshotConfig(url));
                     spinner.succeed(chalk.green('Saved ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)'));
                 } else {
-                    // Save PDF
+                    // Save PDF. 
                     spinner = ora({text: 'Starting PDF screenshot ' + url.path, spinner: 'arc'}).start();
                     await this.page.setViewport(this._getViewportConfig(url));
+                    // Not sure that setting "screen" works as the PDF view seems to only captures the "print" view of the page
                     await this.page.emulateMedia('screen');
                     await this.page.pdf(this._getPdfConfig(url));
                     spinner.succeed(chalk.green('Saved PDF ' + url.path));
@@ -268,6 +285,19 @@ class PageShots {
      * @return {object}
      */
     _setupUrl(url) {
+        url.baseUrl = this._getBaseUrl(url);
+
+        // Set the URL to be made up of the baseURL and the URL value if necessary
+        if (url.baseUrl.length > 0) {
+            if (url.url.substring(0, url.baseUrl.length) !== url.baseUrl && url.url.match(/^http(s?):\/\//) === null) {
+                if (url.url.substring(0, 1) !== '/') {
+                    url.url = '/' + url.url;
+                }
+                url.url = url.baseUrl + url.url;
+            }
+            
+        }
+
         url.clip = this._getClip(url);
         url.dir = this._getDir(url);
         url.filename = this._getFilename(url);
@@ -277,7 +307,22 @@ class PageShots {
         url.quality = this._getQuality(url);
         url.type = this._getType(url);
         url.width = this._getWidth(url);
+
+        
         return url;
+    }
+
+    /**
+     * Gets the base URL if available
+     * @param {object} url The URL object
+     * @return {string}
+     */
+    _getBaseUrl(url) {
+        let baseUrl = this.baseUrl;
+        if (typeof url.baseUrl === 'string' && url.baseUrl.length > 0) {
+            baseUrl = url.baseUrl;
+        }
+        return baseUrl;
     }
 
     /**
@@ -343,6 +388,9 @@ class PageShots {
             filename = sanitize(filename, {replacement: '-'});
             filename = filename.replace(/\.+/g, '-');
             filename = filename.replace(/-{2,}/g, '-');
+            if (filename.substring(filename.length - 1) == '-') {
+                filename = filename.substring(0, filename.length -1);
+            }
         }
 
         // Add the extension

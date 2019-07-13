@@ -21,6 +21,7 @@ function collect(val, values) {
 program
   .version(pkg.version, '-v, --version')
   .description(pkg.description)
+  .option('-b, --base <string>', 'The base URL value. If set then the URL will be appended to this value.')
   .option('-d, --dir <string>', 'The directory relative to where the script is run to output the screenshots to.')
   .option('-f, --fit', 'Fit the screenshot to the provided height and width.')
   .option('-H, --height <integer>', 'Integer height of the viewport to take the screenshot in.', 900)
@@ -58,6 +59,9 @@ async function cli() {
         await pageShots.init();
 
         // Handle the arguments
+        if (program.base) {
+            pageShots.setBaseUrl(program.base);
+        }
         if (program.dir) {
             pageShots.setDir(program.dir);
         }

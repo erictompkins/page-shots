@@ -23,6 +23,7 @@ Table Of Contents
 - [Command Line Options](#command-line-options)
 - [Filenames and Directories](#files-and-directories)
 - [Full Screen and Fixed Size Screenshots](#full-screen-and-fixed-size-screenshots)
+- [Setting URLs](#setting-urls)
 - [Command Line Examples](#command-line-examples)
 - [License](#license)
 
@@ -46,6 +47,7 @@ Command Line Options
 
 | Argument                 | Description |
 | :----------------------- | :---------- |
+| <pre>-b, --base</pre>    | The base URL value. If set then the URL will be appended to this value. |
 | <pre>-d, --dir</pre>     | The directory relative to where the script is run to output the screenshots to. |
 | <pre>-f, --fit</pre>     | Fit the screenshot to the provided height and width. |
 | <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Defaults to 900 |
@@ -80,6 +82,14 @@ By default all screenshots will capture the entire page, not just within the hei
 
 You can go even further and capture just a clip of the page by using the `-clipH`, `-clipW`, `-clipX`, and `-clipY` options. You must specify all four parameters for a clip to be taken.
 
+Setting URLs
+-----------------
+
+You can specify the full URL for each web page to capture. Or, if you're getting multiple screenshots in the same website, then you can set the base URL and then just specify the URL path for each web page.
+
+For example, let's say that your website is `https://www.mysite.com` and you're wanting to capture the home page, the "about us" page and the contact page. You can first set the base URL to be `https://www.mysite.com` and then simply specify `/` for the home page, `about-us` for the about us page, and `contact` for the contact page.
+
+Note, Page Shots is smart enough to ensure that there is only one `/` between the base URL and the page path.
 
 Command line examples
 -----------------
@@ -106,6 +116,12 @@ page-shots -u https://www.branchcms.com -d screenshots -n home
 
 ```
 page-shots -u https://www.branchcms.com -u https://www.aptuitiv.com -d screenshots
+```
+
+### Set a base URL and get a screenshot of multiple URLs in the save website
+
+```
+page-shots -b https://www.branchcms.com -u /pricing -u / -u /docs
 ```
 
 ### Save the screenshot as a png image.
