@@ -19,8 +19,13 @@ class PageShots {
         this.baseUrl = '';
         // The directory that screenshots are saved in
         this.dir = '';
+        // Holds the format to generate the file name from
+        this.nameFormat = '{url}';
         // The list of URLs to get screenshots for
         this.urls = [];
+        // The name and extension for the first URL. Used if setting a name but a URL hasn't been set yet
+        this.firstUrlName = false;
+        this.firstUrlType = false;
         // The time that the script started running
         this.startTime = process.hrtime();
         // Holds the time for when a page started
@@ -131,11 +136,31 @@ class PageShots {
     _addUrl(url) {
         if (typeof url === 'string') {
             if (url.length > 0) {
-                this.urls.push({url: url});
+                this.urls.push(this._setupFirstUrl({url: url}));
             }
         } else if (typeof url === 'object' && typeof url.url !== 'undefined') {
-            this.urls.push(url);
+            this.urls.push(this._setupFirstUrl(url));
         }
+    }
+
+    /**
+     * Sets up the URL object for the first URL
+     * 
+     * It's possible that a name has been set before the URL was set so this will apply that to
+     * the URL object if the URL being added is the first URL.
+     * 
+     * @param {object} url The URL object
+     */
+    _setupFirstUrl(url) {
+        if (this.urls.length == 0) {
+            if (this.firstUrlName) {
+                url.name = this.firstUrlName;
+                if (this.firstUrlType) {
+                    url.ext = this.firstUrlType;
+                }
+            }
+        }
+        return url;
     }
 
     /**
@@ -173,15 +198,32 @@ class PageShots {
     }
 
     /**
-     * Sets the file name for the first URL
+     * Sets the file name for the first URL or the name pattern to use for all URLs
      * @param {string} name The file name
      */
     setName(name) {
         if (typeof name === 'string' && name.length > 0) {
-            this.urls[0]['name'] = name;
-            let ext = this._validateType(path.extname(name).toLowerCase().replace('.', ''));
-            if (ext) {
-                this.urls[0]['type'] = ext;
+            if (name.search('{') !== -1) {
+                /**
+                 * The name includes placeholders and it's a pattern for all URLs. 
+                 * Set it as the new name format
+                 */
+                this.nameFormat = name;
+            } else {
+                // Set it as the name for the first URL
+                let ext = this._validateType(path.extname(name).toLowerCase().replace('.', ''));
+                if (this.urls.length >0) {
+                    // At least one URL has been set. Set the name for the first URL
+                    this.urls[0]['name'] = name;
+                    if (ext) {
+                        this.urls[0]['type'] = ext;
+                    }
+                } else {
+                    // No URLs have been set yet. Set the name and extension for when the first URL is set later
+                    this.firstUrlName = name;
+                    this.firstUrlType = ext;
+                }
+                
             }
         }
     }
@@ -242,6 +284,7 @@ class PageShots {
                         await this.page.pdf(this._getPdfConfig(url));
                         spinner.succeed(chalk.green('Saved PDF ' + url.path));
                     }
+                    // Empty line after each URL run
                     console.log('');
                 }
             } else {
@@ -306,14 +349,23 @@ class PageShots {
 
         url.clip = this._getClip(url);
         url.dir = this._getDir(url);
-        url.filename = this._getFilename(url);
+        
         url.fullPage = this._getFullPage(url);
         url.height = this._getHeight(url);
-        url.path = this._getPath(url);
+        
         url.quality = this._getQuality(url);
         url.type = this._getType(url);
         url.width = this._getWidth(url);
 
+        // Need to be last because the other values could be used to build the URL
+        url.filename = this._getFilename(url);
+        url.path = this._getPath(url);
+
+        // Set the file type again in case the filename extension changes it
+        let ext = this._validateType(path.extname(url.filename).toLowerCase().replace('.', ''));
+        if (ext) {
+            url.type = ext;
+        }
         
         return url;
     }
@@ -387,15 +439,18 @@ class PageShots {
             setExt = true;
 
         if (typeof url.name !== 'undefined') {
-            filename = url.name;
+            // See if the name is a formatted name
+            if (url.name.search('{' !== -1)) {
+                filename = this._formatFileName(url, url.name);
+            } else {
+                filename = url.name;
+            }
         } else {
             // Create the filename based on the URL
-            filename = url.url.replace(/http(s?):\/\//, '');
-            filename = sanitize(filename, {replacement: '-'});
-            filename = filename.replace(/\.+/g, '-');
-            filename = filename.replace(/-{2,}/g, '-');
-            if (filename.substring(filename.length - 1) == '-') {
-                filename = filename.substring(0, filename.length -1);
+            if (this.nameFormat.length > 0) {
+                filename = this._formatFileName(url, this.nameFormat);
+            } else {
+                filename = this._formatFileName(url, '{url}');
             }
         }
 
@@ -409,6 +464,38 @@ class PageShots {
         }
 
         return filename;
+    }
+
+    /**
+     * Formats the file name by replacing placeholders with values
+     * 
+     * Supported placeholders:
+     * {height} - The height of the screenshot. If full screen this height doesn't mean much unless the height of the page is less than this height.
+     * {quality} - The JPG quality of the screenshot image
+     * {url} - The URL the screenshot is for
+     * {width} - The width of the screenshot
+     * 
+     * @param {object} url The URL object
+     * @param {string} name The name format to use
+     */
+    _formatFileName(url, name)
+    {
+        // Set up the "url" portion of the name
+        let urlName = url.url.replace(/http(s?):\/\//, '');
+        urlName = sanitize(urlName, {replacement: '-'});
+        urlName = urlName.replace(/\.+/g, '-');
+        urlName = urlName.replace(/-{2,}/g, '-');
+        if (urlName.substring(urlName.length - 1) == '-') {
+            urlName = urlName.substring(0, urlName.length -1);
+        }
+
+        // Format the name
+        name = name.replace(/{url}/g, urlName);
+        name = name.replace(/{width}/g, url.width);
+        name = name.replace(/{height}/g, url.height);
+        name = name.replace(/{quality}/g, url.quality);
+
+        return name;
     }
 
     /**

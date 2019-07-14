@@ -74,6 +74,23 @@ For example, if the URL is `https://www.branchcms.com` then the file name will b
 
 You can specify a file name for the screenshot. The file name can be just the name without the extension, or if can include the "jpg" or "png" extension. If the file name does not have an extension or it doesn't match either "jpg" or "png" extension then the correct extension based on the `type` argument will be used.
 
+### Dynamic file names
+
+Instead of specifying a specific file name you can specify a format to follow. There are a few placeholders that you can use in the file name to be replaced with information about the screenshot.
+
+| Placeholder | Description  |
+| :---------- | :----------- |
+| {height}    | The height of the screenshot or viewport. |
+| {quality}   | The image quality of the jpg image |
+| {url}       | The filename friendly version of the URL |
+| {width}     | The width of the screenshot. |
+
+The default file name format is `{url}`.
+
+When you set the file name format you can optionally set the extension. As long as the extension is "jpg" or "png" then the image will be saved as a "jpg" or "png" image, respectively.
+
+### Directories
+
 You can specify a directory to save the screenshot(s) in. The directory will be relative to where you call the command. If the directory does not exist then it will be created.
 
 
@@ -112,6 +129,24 @@ page-shots -u https://www.branchcms.com
 
 ```
 page-shots -u https://www.branchcms.com -d screenshots -n home
+```
+
+### Get a screenshot of just one URL and specify the directory and file name. The file will be saved as a "png" because of the file name extension.
+
+```
+page-shots -u https://www.branchcms.com -d screenshots -n home.jpg
+```
+
+### Specify a file name format
+
+```
+page-shots -u https://www.branchcms.com -n home-{width}
+```
+
+### Specify a file name format and set the image to be a png based on the file name
+
+```
+page-shots -u https://www.branchcms.com -n home-{width}.png
 ```
 
 ### Get screenshots for multiple URLs and save to a specific directory.

@@ -99,3 +99,46 @@ describe('addUrl', function() {
         expect(pageShots.urls).to.have.lengthOf(numUrls + 2);
     });
 });
+
+// Confirm that setting the file name works
+describe('setName', function() {
+    it('should set the first URL name value for a simple name if no URL has been set yet', function() {
+        let name = 'home.jpg';
+        pageShots.urls = [];
+        pageShots.setName(name);
+        assert.equal(name, pageShots.firstUrlName);
+        assert.equal('jpg', pageShots.firstUrlType);
+    });
+    it('should set the first URL name value for a simple name if at least one URL has been set', function() {
+        let name = 'home.jpg';
+        pageShots.urls = [];
+        pageShots.addUrl('url');
+        pageShots.setName(name);
+        assert.equal(name, pageShots.urls[0].name);
+        assert.equal('jpg', pageShots.urls[0].type);
+    });
+    it('should set the name pattern', function() {
+        let name = '{url}-{width}-{height}';
+        pageShots.setName(name);
+        assert.equal(name, pageShots.nameFormat);
+    });
+    it('should set the correct file name', function() {
+        let name = '{url}-{width}-{height}-{quality}.png';
+        pageShots.urls = [];
+        pageShots.firstUrlName = pageShots.firstUrlType = '';
+        pageShots.setName(name);
+        pageShots.addUrl('http://www.aptuitiv.com/contact');
+        pageShots.setWidth('1000');
+        pageShots.setHeight('900');
+        let url = pageShots._setupUrl(pageShots.urls[0]);
+        assert.equal(url.filename, 'www-aptuitiv-com-contact-1000-900-100.png');
+    });
+    it('should set the file type to "png"', function() {
+        pageShots.urls = [];
+        pageShots.firstUrlName = pageShots.firstUrlType = '';
+        pageShots.addUrl('https://www.aptuitiv.com');
+        pageShots.setName('home-{width}.png');
+        let url = pageShots._setupUrl(pageShots.urls[0]);
+        assert.equal(url.type, 'png');
+    });
+});
