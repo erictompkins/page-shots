@@ -77,7 +77,10 @@ You can specify a directory to save the screenshot(s) in. The directory will be 
 Full Size and Fixed Size Screenshots
 -----------------
 
-By default all screenshots will capture the entire page, not just within the height and width specified. You can use the `--fit` option to only capture the page within the specified height and width.
+By default all screenshots will capture the entire page, not just within the height and width specified. The `height` value is only used with full size screenshots if the height of the web page is less than the specified height.
+In that case the screenshot will be the specified height. If the height of the web page is larger than the specified height then the actual height of the page will be used.
+
+You can use the `--fit` option to only capture the page within the specified height and width.
 
 You can go even further and capture just a clip of the page by using the `-clipH`, `-clipW`, `-clipX`, and `-clipY` options. You must specify all four parameters for a clip to be taken.
 
