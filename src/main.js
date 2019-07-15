@@ -34,8 +34,9 @@ class PageShots {
         this.fileType = 'jpg';
         // Holds the image quality if the screenshot is a jpg
         this.quality = 100;
-        // Holds the spinner
-        this.spinner = null;
+        // Holds the spinner for loading a page
+        this.pageSpinner = null;
+        this.shotSpinner = null;
         // Holds the viewport width to get the screenshot in
         this.width = 1300;
         // Holds the viewport height to get the screenshot in
@@ -56,7 +57,7 @@ class PageShots {
         this.page = await this.browser.newPage();
 
         this.page.on('load', function() {
-            _self.spinner.succeed(chalk.green(this.url() + ' loaded in ' + _self._getPageElapsedTime()));
+            _self.pageSpinner.succeed(chalk.green(this.url() + ' loaded in ' + _self._getPageElapsedTime()));
         });
     }
 
@@ -258,7 +259,6 @@ class PageShots {
      * Get the screenshots of all of the URLs
      */
     async run() {
-        let spinner;
         try {
             console.log('');
             if (this.urls.length > 0) {
@@ -266,24 +266,11 @@ class PageShots {
                     this.pageStartTime = process.hrtime();
                     url = this._setupUrl(url);
                     this._createDir(url.dir);
-                    this.spinner = ora({text: 'Loading ' + url.url, spinner: 'arc'}).start();
+                    this.pageSpinner = ora({text: 'Loading ' + url.url, spinner: 'arc'}).start();
                     await this.page.goto(url.url);
                     
-                    if (url.type !== 'pdf') {
-                        // Save image screenshot
-                        spinner = ora({text: 'Starting ' + url.type + ' screenshot ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)', spinner: 'arc'}).start();
-                        await this.page.setViewport(this._getViewportConfig(url));
-                        await this.page.screenshot(this._getScreenshotConfig(url));
-                        spinner.succeed(chalk.green('Saved ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)'));
-                    } else {
-                        // Save PDF. 
-                        spinner = ora({text: 'Starting PDF screenshot ' + url.path, spinner: 'arc'}).start();
-                        await this.page.setViewport(this._getViewportConfig(url));
-                        // Not sure that setting "screen" works as the PDF view seems to only captures the "print" view of the page
-                        await this.page.emulateMedia('screen');
-                        await this.page.pdf(this._getPdfConfig(url));
-                        spinner.succeed(chalk.green('Saved PDF ' + url.path));
-                    }
+                    await this._screenshot(url);
+                    
                     // Empty line after each URL run
                     console.log('');
                 }
@@ -298,8 +285,8 @@ class PageShots {
                 this._printElapsedTime();
             }
         } catch (err) {
-            if (typeof spinner !== 'undefined') {
-                spinner.stop();
+            if (typeof this.shotSpinner !== 'undefined') {
+                this.shotSpinner.stop();
             }
             await this.die();
             console.log(err);
@@ -308,11 +295,33 @@ class PageShots {
     }
 
     /**
+     * Gets the screenshot of the image
+     * @param {object} url The URL object
+     */
+    async _screenshot(url) {
+        if (url.type !== 'pdf') {
+            // Save image screenshot
+            this.shotSpinner = ora({text: 'Starting ' + url.type + ' screenshot ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)', spinner: 'arc'}).start();
+            await this.page.setViewport(this._getViewportConfig(url));
+            await this.page.screenshot(this._getScreenshotConfig(url));
+            this.shotSpinner.succeed(chalk.green('Saved ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)'));
+        } else {
+            // Save PDF. 
+            this.shotSpinner = ora({text: 'Starting PDF screenshot ' + url.path, spinner: 'arc'}).start();
+            await this.page.setViewport(this._getViewportConfig(url));
+            // Not sure that setting "screen" works as the PDF view seems to only captures the "print" view of the page
+            await this.page.emulateMedia('screen');
+            await this.page.pdf(this._getPdfConfig(url));
+            this.shotSpinner.succeed(chalk.green('Saved PDF ' + url.path));
+        }
+    }
+
+    /**
      * Kills everything in case of an error
      */
     async die() {
-        if (this.spinner !== null) {
-            this.spinner.stop();
+        if (this.pageSpinner !== null) {
+            this.pageSpinner.stop();
         }
         if (this.browser !== null) {
             await this.browser.close();
