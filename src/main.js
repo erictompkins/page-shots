@@ -350,7 +350,7 @@ class PageShots {
                     console.log('');
                 }
             } else {
-                console.log(chalk.bgRed('Nothing to no. No URLs were set.'));
+                console.log(chalk.bgRed('Nothing to do. No URLs were set.'));
                 console.log('');
             }
 
