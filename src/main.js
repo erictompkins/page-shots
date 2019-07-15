@@ -109,7 +109,7 @@ class PageShots {
         let returnVal = false;
         if (typeof type === 'string' && type.length > 0) {
             type = type.toLowerCase();
-            if (type === 'jpg' || type == 'jpeg' || type === 'png' || type == 'pdf') {
+            if (type === 'jpg' || type == 'jpeg' || type === 'png') {
                 if (type == 'jpeg') {
                     type = 'jpg';
                 }
@@ -332,21 +332,11 @@ class PageShots {
      * @param {object} url The URL object
      */
     async _screenshot(url) {
-        if (url.type !== 'pdf') {
-            // Save image screenshot
-            this.shotSpinner = ora({text: 'Starting ' + url.type + ' screenshot ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)', spinner: 'arc'}).start();
-            await this.page.setViewport(this._getViewportConfig(url));
-            await this.page.screenshot(this._getScreenshotConfig(url));
-            this.shotSpinner.succeed(chalk.green('Saved ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)'));
-        } else {
-            // Save PDF. 
-            this.shotSpinner = ora({text: 'Starting PDF screenshot ' + url.path, spinner: 'arc'}).start();
-            await this.page.setViewport(this._getViewportConfig(url));
-            // Not sure that setting "screen" works as the PDF view seems to only captures the "print" view of the page
-            await this.page.emulateMedia('screen');
-            await this.page.pdf(this._getPdfConfig(url));
-            this.shotSpinner.succeed(chalk.green('Saved PDF ' + url.path));
-        }
+        // Save image screenshot
+        this.shotSpinner = ora({text: 'Starting ' + url.type + ' screenshot ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)', spinner: 'arc'}).start();
+        await this.page.setViewport(this._getViewportConfig(url));
+        await this.page.screenshot(this._getScreenshotConfig(url));
+        this.shotSpinner.succeed(chalk.green('Saved ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)'));
     }
 
     /**
@@ -480,7 +470,7 @@ class PageShots {
     }
 
     /**
-     * Gets the directory to save the screenshot or PDF in
+     * Gets the directory to save the screenshot in
      * @param {object} url The URL object
      * @return {string}
      */
@@ -493,7 +483,7 @@ class PageShots {
     }
 
     /**
-     * Gets the file name to save the screenshot or PDF as
+     * Gets the file name to save the screenshot as
      * @param {string} url 
      * @returns {string}
      */
@@ -604,7 +594,7 @@ class PageShots {
     }
 
     /**
-     * Gets the path to save the screenshot or PDF at
+     * Gets the path to save the screenshot at
      * @param {object} url The URL object
      * @return string
      */
@@ -690,18 +680,6 @@ class PageShots {
             config.fullPage = false;
             config.clip = url.clip;
         }
-        return config;
-    }
-
-    /**
-     * Gets the configuration for saving the page as a PDF
-     * @param {object} url The URL object
-     */
-    _getPdfConfig(url) {
-        let config = {
-            path: url.path,
-            preferCSSPageSize: true
-        };
         return config;
     }
 
