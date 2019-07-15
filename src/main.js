@@ -20,7 +20,7 @@ class PageShots {
         // The directory that screenshots are saved in
         this.dir = '';
         // Holds the format to generate the file name from
-        this.nameFormat = '{url}';
+        this.nameFormat = '{url}-{width}';
         // The list of URLs to get screenshots for
         this.urls = [];
         // The name and extension for the first URL. Used if setting a name but a URL hasn't been set yet
@@ -44,6 +44,8 @@ class PageShots {
         this.width = 1300;
         // Holds the viewport height to get the screenshot in
         this.height = 900;
+        // Holds one or more viewport sizes to get the screenshot in
+        this.sizes = [];
         // Holds whether or not the screenshot should be full page
         this.fullPage = true;
         // Holds an object which specifies clipping region of the page.
@@ -168,6 +170,46 @@ class PageShots {
     }
 
     /**
+     * Adds a viewport size 
+     * 
+     * It can be set from a string where the width and height are separated by an "x".
+     * 1200x560
+     * 
+     * It can be set as an array of sizes
+     * ['1200x560', '600x400']
+     * [{width: 1200, height: 560}, {width: 600, height: 400}]
+     * 
+     * It can also be set as an object that contains the width and height values.
+     * {width: 1200, height: 560}
+     * 
+     * @param {string|Array|object} size The viewport size to add
+     */
+    addSize(size) {
+        let height = 0,
+            width = 0;
+        if (typeof size === 'string') {
+            let sizes = size.split('x');
+            if (sizes.length == 2) {
+                width = sizes[0];
+                height = sizes[1];
+            }
+        } else if (Array.isArray(size) && size.length > 0) {
+            for (let s of size) {
+                this.addSize(s);
+            }
+        } else if (typeof size === 'object' && typeof size.width !== 'undefined' && typeof size.height !== 'undefined') {
+            width = size.width;
+            height = size.height;
+        }
+
+        height = parseInt(height);
+        width = parseInt(width);
+        if (height > 0 && width > 0) {
+            this.sizes.push({width: width, height: height});
+        }
+    }
+
+    /**
      * Sets the width of the viewport to take the screenshot in
      * @param {integer} width 
      */
@@ -284,13 +326,25 @@ class PageShots {
                     this.pageSpinner = ora({text: 'Loading ' + url.url, spinner: 'arc'}).start();
                     await this.page.goto(url.url);
                     
+                    // Sleep if necessary
                     if (url.delay > 0) {
                         this.delaySpinner = ora({text: 'Delaying ' + url.delay + ' milliseconds', spinner: 'arc'}).start();
                         await this._sleep(url.delay);
                         this.delaySpinner.succeed(chalk.green('Delayed ' + url.delay + ' milliseconds'));
                     }
+
+                    // Get the screenshots
+                    if (url.sizes.length > 0) {
+                        for (let size of url.sizes) {
+                            url.width = size.width;
+                            url.height = size.height;
+                            url = this._regenerateFilename(url);
+                            await this._screenshot(url);    
+                        }
+                    } else {
+                        await this._screenshot(url);
+                    }
                     
-                    await this._screenshot(url);
                     
                     // Empty line after each URL run
                     console.log('');
@@ -387,11 +441,10 @@ class PageShots {
         url.clip = this._getClip(url);
         url.delay = this._getDelay(url);
         url.dir = this._getDir(url);
-        
         url.fullPage = this._getFullPage(url);
         url.height = this._getHeight(url);
-        
         url.quality = this._getQuality(url);
+        url.sizes = this._getSizes(url);
         url.type = this._getType(url);
         url.width = this._getWidth(url);
 
@@ -405,6 +458,19 @@ class PageShots {
             url.type = ext;
         }
         
+        return url;
+    }
+
+    /**
+     * Regenerates the URL filename and path
+     * @param {object} url The URL object
+     * @return {object} The updated URL object
+     */
+    _regenerateFilename(url) {
+        delete url.filename;
+        delete url.path;
+        url.filename = this._getFilename(url);
+        url.path = this._getPath(url);
         return url;
     }
 
@@ -599,7 +665,14 @@ class PageShots {
      * @return string
      */
     _getPath(url) {
-        return path.join(this._getDir(url), this._getFilename(url));
+        let dir = this._getDir(url),
+            filename;
+        if (typeof url.filename !== 'undefined') {
+            filename = url.filename;
+        } else {
+            filename = this._getFilename(url);
+        }
+        return path.join(dir, filename);
     }
 
     /**
@@ -619,7 +692,32 @@ class PageShots {
     }
 
     /**
-     * The file type to save the screenshot or PDF as
+     * Gets the sizes for a URL
+     * @param {object} url The URL object
+     * @return {Array}
+     */
+    _getSizes(url) {
+        let sizes = this.sizes,
+            temp = [];
+        if (typeof url.sizes !== 'undefined' && Array.isArray(url.sizes) && url.sizes.length > 0) {
+            for (let size of url.sizes) {
+                if (typeof size === 'object' && typeof size.width !== undefined && typeof size.height !== 'undefined') {
+                    size.width = parseInt(size.width);
+                    size.height = parseInt(size.height);
+                    if (size.width > 0 && size.height > 0) {
+                        temp.push(size);
+                    }
+                }
+            }
+            if (temp.length > 0) {
+                sizes = temp;
+            }
+        }
+        return sizes;
+    }
+
+    /**
+     * The file type to save the screenshot as
      * @param {object} url The URL object
      * @return {string}
      */

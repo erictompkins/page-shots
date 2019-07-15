@@ -175,3 +175,68 @@ describe('setDelay', function() {
         assert.equal(300, pageShots.delay);
     });
 });
+
+describe('addSize', function() {
+    it('should add a size from a string', function() {
+        pageShots.sizes = [];
+        pageShots.addSize('200 x 100');
+        let size = pageShots.sizes[0];
+        expect(size).to.be.an('object');
+        assert.equal(200, size.width);
+        assert.equal(100, size.height);
+    });
+    it('should not add a size from an invalid string', function() {
+        pageShots.sizes = [];
+        pageShots.addSize('200px / 100px');
+        let size = pageShots.sizes[0];
+        expect(size).to.be.undefined;
+    });
+    it('should accept an array for a single size', function() {
+        pageShots.sizes = [];
+        pageShots.addSize(['300x200']);
+        let size = pageShots.sizes[0];
+        expect(size).to.be.an('object');
+        assert.equal(300, size.width);
+        assert.equal(200, size.height);
+    });
+    it('should not accept an array with incorrect values', function() {
+        pageShots.sizes = [];
+        pageShots.addSize(['blah']);
+        let size = pageShots.sizes[0];
+        expect(size).to.be.undefined;
+    });
+    it('should accept and array with multiple string sizes', function() {
+        pageShots.sizes = [];
+        pageShots.addSize(['1000x800', '800x600', '400x200']);
+        let sizes = pageShots.sizes;
+        expect(sizes).to.have.length(3);
+        assert.equal(1000, sizes[0].width);
+        assert.equal(800, sizes[0].height);
+
+        assert.equal(800, sizes[1].width);
+        assert.equal(600, sizes[1].height);
+
+        assert.equal(400, sizes[2].width);
+        assert.equal(200, sizes[2].height);
+    });
+    it('should accept an object for the width and height values', function() {
+        pageShots.sizes = [];
+        pageShots.addSize({width: 800, height: 400});
+        let size = pageShots.sizes[0];
+        expect(size).to.be.an('object');
+        assert.equal(800, size.width);
+        assert.equal(400, size.height);
+    });
+    it('should not accept an object that is missing the width', function() {
+        pageShots.sizes = [];
+        pageShots.addSize({x: 800, height: 400});
+        let size = pageShots.sizes[0];
+        expect(size).to.be.undefined;
+    });
+    it('should not accept an object that is missing the height', function() {
+        pageShots.sizes = [];
+        pageShots.addSize({width: 800});
+        let size = pageShots.sizes[0];
+        expect(size).to.be.undefined;
+    });
+});

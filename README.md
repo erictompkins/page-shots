@@ -22,6 +22,7 @@ Table Of Contents
 - [Install](#install)
 - [Filenames and Directories](#files-and-directories)
 - [Full Screen and Fixed Size Screenshots](#full-screen-and-fixed-size-screenshots)
+- [Setting Screenshot Size](#setting-sreenshot-size)
 - [Setting URLs](#setting-urls)
 - [Delaying the Screenshot](#delaying-the-screenshot)
 - [Command Line Options](#command-line-options)
@@ -64,7 +65,7 @@ Instead of specifying a specific file name you can specify a format to follow. T
 | {url}       | The filename friendly version of the URL |
 | {width}     | The width of the screenshot. |
 
-The default file name format is `{url}`.
+The default file name format is `{url}-{width}`.
 
 When you set the file name format you can optionally set the extension. As long as the extension is "jpg" or "png" then the image will be saved as a "jpg" or "png" image, respectively.
 
@@ -79,6 +80,19 @@ Full Size and Fixed Size Screenshots
 By default all screenshots will capture the entire page, not just within the height and width specified. You can use the `--fit` option to only capture the page within the specified height and width.
 
 You can go even further and capture just a clip of the page by using the `-clipH`, `-clipW`, `-clipX`, and `-clipY` options. You must specify all four parameters for a clip to be taken.
+
+Setting Screenshot Size
+-----------------
+
+There are two ways that you can set the size of the screenshot size. (Note, the screenshot size is always in pixels.)
+
+1. Set the size by setting the `width` and `height` values. The `height` value is only necessary if you want to capture only the exact height and width.
+2. Set one or more sizes by setting the `size` value. The `size` value requires that both the width and height be set. This does not, however, force the screenshot to only
+   match the exact width and height. By default all screenshots are full size. 
+
+[Set multiple screenshot sizes on the command line](#set-multiple-screenshot-sizes).
+
+[Set the screenshot size using the `size` argument on the command line](#set-the-screenshot-size-using-the-size-argument).
 
 Setting URLs
 -----------------
@@ -106,10 +120,11 @@ Command Line Options
 | <pre>-d, --dir</pre>     | The directory relative to where the script is run to output the screenshots to. |
 | <pre>--delay</pre>       | The number of milliseconds to delay after loading before taking a picture of the page. |
 | <pre>-f, --fit</pre>     | Fit the screenshot to the provided height and width. |
-| <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Defaults to 900 |
+| <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Use "--fit" if you want the screenshot to only capture the viewport width and height. Defaults to 900 |
 | <pre>--jpg</pre>         | Set the image type for screenshots to be "jpg". Alternate method to using -t. |
 | <pre>-n, --name</pre>    | The name of the file to save the screenshot as. Only applies to the first URL so it's only useful if getting just one screenshot. |
 | <pre>--png</pre>         | Set the image type for screenshots to be "png". Alternate method to using -t. |
+| <pre>-s, --size</pre>    | A viewport size to capture the screenshot in. The format is WIDTHxHEIGHT. For example, 800x400 for a width of 800px and a height of 400px. Use "--fit" if you want the screenshot to only capture the viewport width and height. |
 | <pre>-t, --type</pre>    | The file type to use for the screenshots. "jpg" or "png". Defaults to "jpg". |
 | <pre>-q, --quality</pre> | The quality of the jpg image, between 0-100. Not applicable to png image. Defaults to 100 |
 | <pre>-u, --url</pre>     | URL to get the screenshot of. You can specify this parameter multiple times to get a screenshot of multiple web pages. |
@@ -166,7 +181,7 @@ page-shots -u https://www.branchcms.com -n home-{width}.png
 page-shots -u https://www.branchcms.com -u https://www.aptuitiv.com -d screenshots
 ```
 
-### Set a base URL and get a screenshot of multiple URLs in the save website
+### Set a base URL and get a screenshot of multiple URLs in the same website.
 
 ```
 page-shots -b https://www.branchcms.com -u /pricing -u / -u /docs
@@ -194,6 +209,35 @@ page-shots -u https://www.branchcms.com -W 415
 
 ```
 page-shots -u https://www.branchcms.com -W 1200 -H 800 --fit
+```
+
+### Set the screenshot size using the `size` argument.
+
+The `size` argument requires that both the width and height be set. Use this format:
+
+`WIDTHxHEIGHT`
+
+There should not be a space between the width, the "x", and the height.
+
+Set the width to be 1000px and the height to be 600px.
+
+```
+page-shots -u https://www.branchcms.com -s 1000x600
+```
+
+### Set multiple screenshot sizes.
+
+The following will set the following screenshot sizes:
+
+- 1000px width and 600px height
+- 600px width and 600px height
+- 400px width and 800px height
+
+
+> Because the `--fit` parameter is not set only the width actually applies to the screenshot.
+
+```
+page-shots -u https://www.branchcms.com -s 1000x600 -s 600x600 -s 400x800
 ```
 
 ### Delay for 3 seconds after loading the page before taking the screenshot
