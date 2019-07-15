@@ -142,3 +142,36 @@ describe('setName', function() {
         assert.equal(url.type, 'png');
     });
 });
+
+// Confirm setting a delay
+describe('setDelay', function() {
+    it('should default to 0', function() {
+        assert.equal(0, pageShots.delay);
+    });
+    it('should set a number delay', function() {
+        pageShots.delay = 0;
+        let delay = 1000;
+        pageShots.setDelay(delay); 
+        assert.equal(delay, pageShots.delay);
+    });
+    it('should not go above 10,000', function() {
+        pageShots.delay = 0;
+        pageShots.setDelay(100000); 
+        assert.equal(0, pageShots.delay);
+    });
+    it('should not go below 0', function() {
+        pageShots.delay = 0;
+        pageShots.setDelay(-1); 
+        assert.equal(0, pageShots.delay);
+    });
+    it('should ignore strings', function() {
+        pageShots.delay = 0;
+        pageShots.setDelay('time'); 
+        assert.equal(0, pageShots.delay);
+    });
+    it('should ignore parseInt', function() {
+        pageShots.delay = 0;
+        pageShots.setDelay('300'); 
+        assert.equal(300, pageShots.delay);
+    });
+});

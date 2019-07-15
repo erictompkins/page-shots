@@ -20,10 +20,11 @@ Table Of Contents
 
 - [Requirements](#requirements)
 - [Install](#install)
-- [Command Line Options](#command-line-options)
 - [Filenames and Directories](#files-and-directories)
 - [Full Screen and Fixed Size Screenshots](#full-screen-and-fixed-size-screenshots)
 - [Setting URLs](#setting-urls)
+- [Delaying the Screenshot](#delaying-the-screenshot)
+- [Command Line Options](#command-line-options)
 - [Command Line Examples](#command-line-examples)
 - [License](#license)
 
@@ -41,28 +42,6 @@ Install
 ```
 npm install -g page-shots
 ```
-
-Command Line Options
------------------
-
-| Argument                 | Description |
-| :----------------------- | :---------- |
-| <pre>-b, --base</pre>    | The base URL value. If set then the URL will be appended to this value. |
-| <pre>-d, --dir</pre>     | The directory relative to where the script is run to output the screenshots to. |
-| <pre>-f, --fit</pre>     | Fit the screenshot to the provided height and width. |
-| <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Defaults to 900 |
-| <pre>--jpg</pre>         | Set the image type for screenshots to be "jpg". Alternate method to using -t. |
-| <pre>-n, --name</pre>    | The name of the file to save the screenshot as. Only applies to the first URL so it's only useful if getting just one screenshot. |
-| <pre>--png</pre>         | Set the image type for screenshots to be "png". Alternate method to using -t. |
-| <pre>-t, --type</pre>    | The file type to use for the screenshots. "jpg" or "png". Defaults to "jpg". |
-| <pre>-q, --quality</pre> | The quality of the jpg image, between 0-100. Not applicable to png image. Defaults to 100 |
-| <pre>-u, --url</pre>     | URL to get the screenshot of. You can specify this parameter multiple times to get a screenshot of multiple web pages. |
-| <pre>-W, --width</pre>   | Integer width of the viewport to take the screenshot in. Defaults to 1300 |
-| <pre>-v, --version</pre> | Output the version number |
-| <pre>--clipH</pre>       | The height of the clip area. |
-| <pre>--clipW</pre>       | The width of the clip area. |
-| <pre>--clipX</pre>       | The x-coordinate of top-left corner of clip area. |
-| <pre>--clipY</pre>       | The y-coordinate of top-left corner of clip area. |
 
 
 Filenames and Directories
@@ -109,6 +88,38 @@ You can specify the full URL for each web page to capture. Or, if you're getting
 For example, let's say that your website is `https://www.mysite.com` and you're wanting to capture the home page, the "about us" page and the contact page. You can first set the base URL to be `https://www.mysite.com` and then simply specify `/` for the home page, `about-us` for the about us page, and `contact` for the contact page.
 
 Note, Page Shots is smart enough to ensure that there is only one `/` between the base URL and the page path.
+
+
+Delaying the Screenshot
+-----------------
+
+If you need to wait for certain assets to load on the page before taking the screenshot then you set a specific number of milliseconds to wait after the page loads and before the screenshot is taken.
+
+An example scenario could be if you have a Google Map section on the page and you want to make sure that it fully loads before taking the screenshot.
+
+Command Line Options
+-----------------
+
+| Argument                 | Description |
+| :----------------------- | :---------- |
+| <pre>-b, --base</pre>    | The base URL value. If set then the URL will be appended to this value. |
+| <pre>-d, --dir</pre>     | The directory relative to where the script is run to output the screenshots to. |
+| <pre>--delay</pre>       | The number of milliseconds to delay after loading before taking a picture of the page. |
+| <pre>-f, --fit</pre>     | Fit the screenshot to the provided height and width. |
+| <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Defaults to 900 |
+| <pre>--jpg</pre>         | Set the image type for screenshots to be "jpg". Alternate method to using -t. |
+| <pre>-n, --name</pre>    | The name of the file to save the screenshot as. Only applies to the first URL so it's only useful if getting just one screenshot. |
+| <pre>--png</pre>         | Set the image type for screenshots to be "png". Alternate method to using -t. |
+| <pre>-t, --type</pre>    | The file type to use for the screenshots. "jpg" or "png". Defaults to "jpg". |
+| <pre>-q, --quality</pre> | The quality of the jpg image, between 0-100. Not applicable to png image. Defaults to 100 |
+| <pre>-u, --url</pre>     | URL to get the screenshot of. You can specify this parameter multiple times to get a screenshot of multiple web pages. |
+| <pre>-W, --width</pre>   | Integer width of the viewport to take the screenshot in. Defaults to 1300 |
+| <pre>-v, --version</pre> | Output the version number |
+| <pre>--clipH</pre>       | The height of the clip area. |
+| <pre>--clipW</pre>       | The width of the clip area. |
+| <pre>--clipX</pre>       | The x-coordinate of top-left corner of clip area. |
+| <pre>--clipY</pre>       | The y-coordinate of top-left corner of clip area. |
+
 
 Command line examples
 -----------------
@@ -183,6 +194,12 @@ page-shots -u https://www.branchcms.com -W 415
 
 ```
 page-shots -u https://www.branchcms.com -W 1200 -H 800 --fit
+```
+
+### Delay for 3 seconds after loading the page before taking the screenshot
+
+```
+page-shots -u https://www.branchcms.com -W 1200 --delay 3000
 ```
 
 ### Capture just a clip on the page 100px down from the top that is 900px wide and 400px tall.

@@ -34,9 +34,12 @@ class PageShots {
         this.fileType = 'jpg';
         // Holds the image quality if the screenshot is a jpg
         this.quality = 100;
-        // Holds the spinner for loading a page
+        // The number of milliseconds to delay after loading before taking a picture of the page
+        this.delay = 0;
+        // Holds the spinner for loading a page and taking a screenshot
         this.pageSpinner = null;
         this.shotSpinner = null;
+        this.delaySpinner = null;
         // Holds the viewport width to get the screenshot in
         this.width = 1300;
         // Holds the viewport height to get the screenshot in
@@ -187,6 +190,17 @@ class PageShots {
     }
 
     /**
+     * Sets the number of milliseconds to delay after loading a page before taking a screenshot
+     * @param {Number} delay The number of milliseconds to delay
+     */
+    setDelay(delay) {
+        delay = parseInt(delay);
+        if (delay > 0 && delay <= 10000) {
+            this.delay = delay;
+        }
+    }
+
+    /**
      * Sets whether or not to get a full page screenshot
      * @param {string|boolean} full 
      */
@@ -259,6 +273,7 @@ class PageShots {
      * Get the screenshots of all of the URLs
      */
     async run() {
+        var _self = this;
         try {
             console.log('');
             if (this.urls.length > 0) {
@@ -268,6 +283,12 @@ class PageShots {
                     this._createDir(url.dir);
                     this.pageSpinner = ora({text: 'Loading ' + url.url, spinner: 'arc'}).start();
                     await this.page.goto(url.url);
+                    
+                    if (url.delay > 0) {
+                        this.delaySpinner = ora({text: 'Delaying ' + url.delay + ' milliseconds', spinner: 'arc'}).start();
+                        await this._sleep(url.delay);
+                        this.delaySpinner.succeed(chalk.green('Delayed ' + url.delay + ' milliseconds'));
+                    }
                     
                     await this._screenshot(url);
                     
@@ -285,13 +306,25 @@ class PageShots {
                 this._printElapsedTime();
             }
         } catch (err) {
-            if (typeof this.shotSpinner !== 'undefined') {
+            if (typeof this.shotSpinner !== null) {
                 this.shotSpinner.stop();
+            }
+            if (typeof this.delaySpinner !== null) {
+                this.delaySpinner.stop();
             }
             await this.die();
             console.log(err);
             return null;
         }
+    }
+
+    /**
+     * Sleeps the program
+     * @link https://flaviocopes.com/javascript-sleep/
+     * @param {Number} milliseconds 
+     */
+    _sleep(milliseconds) {
+        return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
 
     /**
@@ -323,6 +356,12 @@ class PageShots {
         if (this.pageSpinner !== null) {
             this.pageSpinner.stop();
         }
+        if (typeof this.shotSpinner !== null) {
+            this.shotSpinner.stop();
+        }
+        if (typeof this.delaySpinner !== null) {
+            this.delaySpinner.stop();
+        }
         if (this.browser !== null) {
             await this.browser.close();
         }
@@ -353,10 +392,10 @@ class PageShots {
                 }
                 url.url = url.baseUrl + url.url;
             }
-            
         }
 
         url.clip = this._getClip(url);
+        url.delay = this._getDelay(url);
         url.dir = this._getDir(url);
         
         url.fullPage = this._getFullPage(url);
@@ -421,6 +460,23 @@ class PageShots {
             }
         }
         return clip;
+    }
+
+    /**
+     * Gets the number of milliseconds to delay after loading the URL before taking a screenshot
+     * @param {object} url The URL object
+     * @return {Number}
+     */
+    _getDelay(url) {
+        let delay = this.delay,
+            temp;
+        if (typeof url.delay !== 'undefined') {
+            temp = parseInt(url.delay);
+            if (temp > 0 && temp <= 10000) {
+                delay = temp;
+            }
+        }
+        return delay;
     }
 
     /**

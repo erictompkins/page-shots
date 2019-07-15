@@ -23,6 +23,7 @@ program
   .description(pkg.description)
   .option('-b, --base <string>', 'The base URL value. If set then the URL will be appended to this value.')
   .option('-d, --dir <string>', 'The directory relative to where the script is run to output the screenshots to.')
+  .option('--delay <integer>', 'The number of milliseconds to delay after loading before taking a picture of the page.')
   .option('-f, --fit', 'Fit the screenshot to the provided height and width.')
   .option('-H, --height <integer>', 'Integer height of the viewport to take the screenshot in.', 900)
   .option('--jpg', 'Set the image type for screenshots to be "jpg". Alternate method to using -t.')
@@ -90,6 +91,9 @@ async function cli() {
         }
         if (program.quality) {
             pageShots.setQuality(program.quality);
+        }
+        if (program.delay) {
+            pageShots.setDelay(program.delay);
         }
         if (
             typeof program.clipX !== 'undefined' 
