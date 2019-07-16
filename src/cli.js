@@ -4,8 +4,10 @@
 const program = require('commander'),
     pkg = require('../package.json'),
     main = require('./main'),
+    init = require('./init'),
     pageShots = main.pageShots;
 
+let getScreenshots = true
 
 /**
  * Collect multiple parameter values into one array
@@ -39,6 +41,18 @@ program
   .option('--clipX <integer>', 'The x-coordinate of top-left corner of clip area.')
   .option('--clipY <integer>', 'The y-coordinate of top-left corner of clip area.');
 
+program
+    .command('init [file]')
+    .description('Initialize the JSON file that is used to configure the URLs to get screenshots of.')
+    .action(function(file, env) {
+        init.json.setDir(process.cwd());
+        if (file) {
+            init.json.setFilename(file);
+        }
+        init.json.build();
+        getScreenshots = false;
+    });
+
 // Output some additional examples
 program.on('--help', function() {
     console.log('');
@@ -52,65 +66,66 @@ program.on('--help', function() {
     console.log('');
 });
 
-program.parse(process.argv);
-
 /**
  * Main function to run the CLI
  */
 async function cli() {
     try {
-        // Initialize pageShots
-        await pageShots.init();
+        program.parse(process.argv);
+        if (getScreenshots) {
+            // Initialize pageShots
+            await pageShots.init();
 
-        // Handle the arguments
-        if (program.base) {
-            pageShots.setBaseUrl(program.base);
+            // Handle the arguments
+            if (program.base) {
+                pageShots.setBaseUrl(program.base);
+            }
+            if (program.dir) {
+                pageShots.setDir(program.dir);
+            }
+            if (program.url) {
+                pageShots.addUrl(program.url);
+            }
+            if (program.height) {
+                pageShots.setHeight(program.height);
+            }
+            if (program.width) {
+                pageShots.setWidth(program.width);
+            }
+            if (program.fit) {
+                pageShots.setFullScreen(false);
+            }
+            if (program.type) {
+                pageShots.setFileType(program.type);
+            }
+            if (program.png) {
+                pageShots.setFileType('png');
+            }
+            if (program.jpg) {
+                pageShots.setFileType('jpg');
+            }
+            if (program.quality) {
+                pageShots.setQuality(program.quality);
+            }
+            if (program.delay) {
+                pageShots.setDelay(program.delay);
+            }
+            if (program.size) {
+                pageShots.addSize(program.size);
+            }
+            if (
+                typeof program.clipX !== 'undefined' 
+                && typeof program.clipY !== 'undefined'
+                && typeof program.clipW !== 'undefined' 
+                && typeof program.clipH !== 'undefined'
+            ) {
+                pageShots.setClip(program.clipX, program.clipY, program.clipW, program.clipH);
+            }
+            if (program.name) {
+                pageShots.setName(program.name);
+            }
+            pageShots.run();
         }
-        if (program.dir) {
-            pageShots.setDir(program.dir);
-        }
-        if (program.url) {
-            pageShots.addUrl(program.url);
-        }
-        if (program.height) {
-            pageShots.setHeight(program.height);
-        }
-        if (program.width) {
-            pageShots.setWidth(program.width);
-        }
-        if (program.fit) {
-            pageShots.setFullScreen(false);
-        }
-        if (program.type) {
-            pageShots.setFileType(program.type);
-        }
-        if (program.png) {
-            pageShots.setFileType('png');
-        }
-        if (program.jpg) {
-            pageShots.setFileType('jpg');
-        }
-        if (program.quality) {
-            pageShots.setQuality(program.quality);
-        }
-        if (program.delay) {
-            pageShots.setDelay(program.delay);
-        }
-        if (program.size) {
-            pageShots.addSize(program.size);
-        }
-        if (
-            typeof program.clipX !== 'undefined' 
-            && typeof program.clipY !== 'undefined'
-            && typeof program.clipW !== 'undefined' 
-            && typeof program.clipH !== 'undefined'
-        ) {
-            pageShots.setClip(program.clipX, program.clipY, program.clipW, program.clipH);
-        }
-        if (program.name) {
-            pageShots.setName(program.name);
-        }
-        pageShots.run();
     } catch (err) {
         await pageShots.die();
         console.log(err);

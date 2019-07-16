@@ -20,6 +20,7 @@ Table Of Contents
 
 - [Requirements](#requirements)
 - [Install](#install)
+- [Usage](#usage)
 - [Filenames and Directories](#files-and-directories)
 - [Full Screen and Fixed Size Screenshots](#full-screen-and-fixed-size-screenshots)
 - [Setting Screenshot Size](#setting-sreenshot-size)
@@ -27,6 +28,7 @@ Table Of Contents
 - [Delaying the Screenshot](#delaying-the-screenshot)
 - [Command Line Options](#command-line-options)
 - [Command Line Examples](#command-line-examples)
+- [Use a JSON file to specify one or more URLs and configuration](#use-a-json-file-to-specify-one-or-more-urls-and-configuration)
 - [License](#license)
 
 
@@ -44,6 +46,14 @@ Install
 npm install -g page-shots
 ```
 
+
+Usage
+-----------------
+
+There are two ways to use the Page Shots library.
+
+1. Specify one or more URLs on the [command line](#command-line-options) to get screenshots for.
+2. Use a [JSON file](#use-a-json-file-to-specify-one-or-more-urls-and-configuration) to specify one or more URLs and process it on the command line.
 
 Filenames and Directories
 -----------------
@@ -125,7 +135,7 @@ Command Line Options
 | <pre>-f, --fit</pre>     | Fit the screenshot to the provided height and width. |
 | <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Use "--fit" if you want the screenshot to only capture the viewport width and height. Defaults to 900 |
 | <pre>--jpg</pre>         | Set the image type for screenshots to be "jpg". Alternate method to using -t. |
-| <pre>-n, --name</pre>    | The name of the file to save the screenshot as. Only applies to the first URL so it's only useful if getting just one screenshot. |
+| <pre>-n, --name</pre>    | The name of the file to save the screenshot as. It can also be a [name format](#dynamic-file-names) that will be used to build the filename for each screenshot. If you're not setting a name format, then the name only applies to the first URL so it's only useful if getting just one screenshot. |
 | <pre>--png</pre>         | Set the image type for screenshots to be "png". Alternate method to using -t. |
 | <pre>-s, --size</pre>    | A viewport size to capture the screenshot in. The format is WIDTHxHEIGHT. For example, 800x400 for a width of 800px and a height of 400px. Use "--fit" if you want the screenshot to only capture the viewport width and height. |
 | <pre>-t, --type</pre>    | The file type to use for the screenshots. "jpg" or "png". Defaults to "jpg". |
@@ -255,8 +265,66 @@ page-shots -u https://www.branchcms.com -W 1200 --delay 3000
 page-shots -u https://www.branchcms.com -W 1200 --clipH 400 --clipW 900 --clipX 0 --clipY 100
 ```
 
+
+Use a JSON file to specify one or more URLs and configuration
+-----------------
+
+Instead of specifying the URLs to get sreenshots for and their configuration through the [command line options](#command-line-options) you can do all of that in JSON file.
+This is the recommended method if you are getting screenshots for multiple URLs at one time.
+
+Below is an example JSON file:
+
+```
+{
+    "urls": [
+        "https://www.branchcms.com",
+        "https://www.branchcms.com/pricing"
+        "https://www.aptuitiv.com"
+    ],
+    "sizes": [
+        "1200x800",
+        "800x800",
+        "420x700"
+    ]
+}
+```
+
+The above specifies 3 URLs to get screenshots for and 3 different viewport sizes to save each screenshot as.
+
+### JSON values
+
+Below is a description of each of the JSON keys that you can set values for.
+
+Only the `urls` value is actually required. If the others aren't set then the default values will be used.
+
+| Name       | Description  |
+| :--------- | ------------ |
+| baseUrl    | The base URL value. If set then each URL will be appended to this value. If it's not set then it's not used and each URL should be the full URL. |
+| nameFormat | The [name format](#dynamic-file-names) to use to build the file name for each screenshot. Defaults to `{url}-{width}` if not set. |
+| sizes      | An array of viewport sizes to get the screenshots in. Defaults to `1300x900` if not set.|
+| type       | The file type to use for the screenshots. "jpg" or "png". Defaults to `jpg` if not set. |
+| urls       | An array of URLs to get screenshots for. You can either set each one as a string, or they can be a JSON object overriding configuration options for each URL. |
+
+
+### Initialize the JSON file
+
+A utility command can be used to generate a boilerplate JSON file.
+
+```
+page-shots init
+```
+
+By default the JSON file will be built in the same directory that you're accessing on the command line. And by default the file name will be `shots.json`.
+
+You can specify your own name for the JSON file by passing a value after the `init` command.
+
+```
+page-shots init myfile.json
+```
+
+
 License
--------
+-----------------
 
 Page Shots is licensed under the [MIT][info-license] license.
 
