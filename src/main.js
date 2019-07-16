@@ -400,10 +400,10 @@ class PageShots {
         if (this.pageSpinner !== null) {
             this.pageSpinner.stop();
         }
-        if (typeof this.shotSpinner !== null) {
+        if (this.shotSpinner !== null) {
             this.shotSpinner.stop();
         }
-        if (typeof this.delaySpinner !== null) {
+        if (this.delaySpinner !== null) {
             this.delaySpinner.stop();
         }
         if (this.browser !== null) {
