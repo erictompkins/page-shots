@@ -301,7 +301,7 @@ class PageShots {
         y = parseInt(y);
         w = parseInt(w);
         h = parseInt(h);
-        if (x >= 0 && y >= 0 && w >= 0 && h >= 0) {
+        if (x >= 0 && y >= 0 && w > 0 && h > 0) {
             this.clip = {
                 x: x,
                 y: y,
