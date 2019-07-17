@@ -659,6 +659,30 @@ class PageShots {
         if (urlName.substring(urlName.length - 1) == '-') {
             urlName = urlName.substring(0, urlName.length -1);
         }
+        if (urlName.substring(0, 1) == '-') {
+            urlName = urlName.substring(1);
+        }
+
+        // Get the URL stub
+        let stub = url.url.replace(/http(s?):\/\//, '');
+        let stubParts = stub.split('/');
+        stub = stub.replace(stubParts[0], '').trim();
+        if (stub == '/' || stub.length == 0) {
+            stub = 'home';
+        } else {
+            if (stub.substring(0, 1) == '/') {
+                stub = stub.substring(1);
+            }
+            stub = sanitize(stub, {replacement: '-'});
+            stub = stub.replace(/\.+/g, '-');
+            stub = stub.replace(/-{2,}/g, '-');
+            if (stub.substring(stub.length - 1) == '-') {
+                stub = stub.substring(0, stub.length -1);
+            }
+            if (stub.substring(0, 1) == '-') {
+                stub = stub.substring(1);
+            }
+        }
 
         // Set up the "full/fit" portion of the name
         let full = 'full',
@@ -671,6 +695,7 @@ class PageShots {
 
         // Format the name
         name = name.replace(/{url}/g, urlName);
+        name = name.replace(/{stub}/g, stub);
         name = name.replace(/{width}/g, url.width);
         name = name.replace(/{height}/g, url.height);
         name = name.replace(/{quality}/g, url.quality);

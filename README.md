@@ -74,6 +74,7 @@ Instead of specifying a specific file name you can specify a format to follow. T
 | {full}      | `fit` if the screenshot will only be for the specified width and height. `full` if the screenshot will be for the full page. |
 | {height}    | The height of the screenshot or viewport. |
 | {quality}   | The image quality of the jpg image |
+| {stub}      | The URL stub. This would be the part of the URL after the domain name. |
 | {url}       | The filename friendly version of the URL |
 | {width}     | The width of the screenshot. |
 
