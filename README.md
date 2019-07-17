@@ -280,10 +280,10 @@ Below is an example JSON file:
 
 ```
 {
-    "name": "{url}-{width}-{height}.png"
+    "name": "{url}-{width}-{height}.png",
     "urls": [
         "https://www.branchcms.com",
-        "https://www.branchcms.com/pricing"
+        "https://www.branchcms.com/pricing",
         "https://www.aptuitiv.com"
     ],
     "sizes": [
