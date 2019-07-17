@@ -66,16 +66,16 @@ You can specify a file name for the screenshot. The file name can be just the na
 
 ### Dynamic file names
 
-Instead of specifying a specific file name you can specify a format to follow. There are a few placeholders that you can use in the file name to be replaced with information about the screenshot.
+Instead of specifying a specific file name, you can specify a format to follow. There are a few placeholders that you can use in the file name to be replaced with information about the screenshot.
 
 | Placeholder | Description  |
 | :---------- | :----------- |
 | {fit}       | `fit` if the screenshot will only be for the specified width and height. `full` if the screenshot will be for the full page. |
 | {full}      | `fit` if the screenshot will only be for the specified width and height. `full` if the screenshot will be for the full page. |
 | {height}    | The height of the screenshot or viewport. |
-| {quality}   | The image quality of the jpg image |
+| {quality}   | The image quality of the jpg image. |
 | {stub}      | The URL stub. This would be the part of the URL after the domain name. |
-| {url}       | The filename friendly version of the URL |
+| {url}       | The filename friendly version of the URL. |
 | {width}     | The width of the screenshot. |
 
 The default file name format is `{url}-{width}`.
@@ -361,13 +361,13 @@ There are two ways to use the JSON configuration file.
 Use the `-c` or `--config` argument to specify the JSON config file to use. If you use this argument any other arguments are ignored.
 
 ```
-page-shots -c 'my-file.json'
+page-shots -c myfile.json
 ```
 
 When specifying the name of the JSON config file you don't have to include the `.json` extension. If the extension of the file is not `.json` then it's automatically added.
 
 ```
-page-shots -c 'my-file'
+page-shots -c myfile
 ```
 
 ### Sample JSON
