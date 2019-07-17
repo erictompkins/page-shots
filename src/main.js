@@ -751,6 +751,15 @@ class PageShots {
                     if (size.width > 0 && size.height > 0) {
                         temp.push(size);
                     }
+                } else if (typeof size == 'string') {
+                    let sizeParts = size.split('x');
+                    if (sizeParts.length == 2) {
+                        let width = parseInt(sizeParts[0]);
+                        let height = parseInt(sizeParts[1]);
+                        if (width > 0 && height > 0) {
+                            temp.push({width: width, height: height});
+                        }
+                    }
                 }
             }
             if (temp.length > 0) {
