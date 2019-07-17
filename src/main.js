@@ -363,7 +363,13 @@ class PageShots {
                     url = this._setupUrl(url);
                     this._createDir(url.dir);
                     this.pageSpinner = ora({text: 'Loading ' + url.url, spinner: 'arc'}).start();
-                    await this.page.goto(url.url);
+                    try {
+                        await this.page.goto(url.url);
+                    } catch (err) {
+                        this.pageSpinner.fail(chalk.red('Could not load ' + url.url + '. ' + err));
+                        console.log('');
+                        continue;
+                    }
                     
                     // Sleep if necessary
                     if (url.delay > 0) {
