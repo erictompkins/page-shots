@@ -477,6 +477,11 @@ class PageShots {
             }
         }
 
+        if (url.url.match(/^http(s?):\/\//) === null) {
+            // The URL does not start with "http" or "https"
+            url.url = 'http://' + url.url;
+        }
+
         url.clip = this._getClip(url);
         url.delay = this._getDelay(url);
         url.dir = this._getDir(url);
