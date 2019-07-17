@@ -1,6 +1,6 @@
 {
   "name": "page-shots",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Take screenshots of multiple pages and in multiple sizes",
   "main": "index.js",
   "scripts": {
