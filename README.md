@@ -440,6 +440,8 @@ If you use a JSON object for a size then you can also specify if the screenshot 
 
 If you use a JSON object for a URL then you can override all other options for that individual URL.
 
+If you use the `baseUrl` option but your `url` value starts with `https://` or `http://` then the `baseUrl` value will not be used for that URL.
+
 License
 -----------------
 

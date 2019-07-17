@@ -67,6 +67,9 @@ program.on('--help', function() {
     console.log('  page-shots -d images -u https://www.mysite.com -w 900 -q 80');
     console.log('  page-shots -d images -u https://www.mysite.com -w 900 -t png');
     console.log('  page-shots -d images -u https://www.mysite.com -w 450 -h 800 --fit');
+    console.log('  page-shots init');
+    console.log('  page-shots');
+    console.log('  page-shots -c myurls.json');
     console.log('');
 });
 
