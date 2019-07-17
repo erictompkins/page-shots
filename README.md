@@ -70,6 +70,8 @@ Instead of specifying a specific file name you can specify a format to follow. T
 
 | Placeholder | Description  |
 | :---------- | :----------- |
+| {fit}       | `fit` if the screenshot will only be for the specified width and height. `full` if the screenshot will be for the full page. |
+| {full}      | `fit` if the screenshot will only be for the specified width and height. `full` if the screenshot will be for the full page. |
 | {height}    | The height of the screenshot or viewport. |
 | {quality}   | The image quality of the jpg image |
 | {url}       | The filename friendly version of the URL |

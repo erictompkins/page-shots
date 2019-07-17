@@ -654,11 +654,22 @@ class PageShots {
             urlName = urlName.substring(0, urlName.length -1);
         }
 
+        // Set up the "full/fit" portion of the name
+        let full = 'full',
+            fit = 'fit';
+        if (url.fullScreen) {
+            fit = 'full';
+        } else {
+            full = 'fit';
+        }
+
         // Format the name
         name = name.replace(/{url}/g, urlName);
         name = name.replace(/{width}/g, url.width);
         name = name.replace(/{height}/g, url.height);
         name = name.replace(/{quality}/g, url.quality);
+        name = name.replace(/{full}/g, full);
+        name = name.replace(/{fit}/g, fit);
 
         return name;
     }
