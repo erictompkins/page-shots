@@ -379,7 +379,7 @@ You wouldn't use all of the options as some of them override other options. For 
 ```
 {
     "baseUrl": "https://www.branchcms.com",
-    "clip": {x: 20, y: 105, w: 800, h: 400},
+    "clip": {"x": 20, "y": 105, "w": 800, "h": 400},
     "delay": 400,
     "dir": "screenshots",
     "height": 900,
@@ -423,14 +423,14 @@ You wouldn't use all of the options as some of them override other options. For 
                 "1200x800",
                 {
                     "width": 800,
-                    "height": 400",
+                    "height": 400,
                     "fit": true
                 }
             ],
             "type": "jpg",
             "width": 1400
         }
-    ]
+    ],
     "width": 1000
 }
 ```
