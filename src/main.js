@@ -47,7 +47,7 @@ class PageShots {
         // Holds one or more viewport sizes to get the screenshot in
         this.sizes = [];
         // Holds whether or not the screenshot should be full page
-        this.fullPage = true;
+        this.fullScreen = true;
         // Holds an object which specifies clipping region of the page.
         this.clip = false;
         // Holds the browser object
@@ -287,9 +287,9 @@ class PageShots {
      */
     setFullScreen(full) {
         if (full === 'y' || full === 'yes' || full === true || full === 'true') {
-            this.fullPage = true;
+            this.fullScreen = true;
         } else {
-            this.fullPage = false;
+            this.fullScreen = false;
         }
     }
 
@@ -374,9 +374,15 @@ class PageShots {
 
                     // Get the screenshots
                     if (url.sizes.length > 0) {
+                        let fullScreen = url.fullScreen;
                         for (let size of url.sizes) {
                             url.width = size.width;
                             url.height = size.height;
+                            if (typeof size.full !== 'undefined' || typeof size.fit !== 'undefined') {
+                                url.fullScreen = this._getFullScreen(size);
+                            } else {
+                                url.fullScreen = fullScreen;
+                            }
                             url = this._regenerateFilename(url);
                             await this._screenshot(url);    
                         }
@@ -485,7 +491,7 @@ class PageShots {
         url.clip = this._getClip(url);
         url.delay = this._getDelay(url);
         url.dir = this._getDir(url);
-        url.fullPage = this._getFullPage(url);
+        url.fullScreen = this._getFullScreen(url);
         url.height = this._getHeight(url);
         url.quality = this._getQuality(url);
         url.sizes = this._getSizes(url);
@@ -679,23 +685,23 @@ class PageShots {
      * @param {object} url The URL object
      * @return {boolean}
      */
-    _getFullPage(url) {
-        let fullPage = this.fullPage;
+    _getFullScreen(url) {
+        let fullScreen = this.fullScreen;
         if (typeof url.fit !== 'undefined') {
             if (url.fit === true || url.fit === 'true' || url.fit === 'y' || url.fit === 'yes') {
-                fullPage = false;
+                fullScreen = false;
             } else {
-                fullPage = true;
+                fullScreen = true;
             }
         }
         if (typeof url.full !== 'undefined') {
             if (url.full === true || url.full === 'true' || url.full === 'y' || url.full === 'yes') {
-                fullPage = true;
+                fullScreen = true;
             } else {
-                fullPage = false;
+                fullScreen = false;
             }
         }
-        return fullPage;
+        return fullScreen;
     }
 
     /**
@@ -832,7 +838,7 @@ class PageShots {
      */
     _getScreenshotConfig(url) {
         let config = {
-            fullPage: url.fullPage,
+            fullPage: url.fullScreen,
             path: url.path
         };
         if (url.type == 'jpg') {
