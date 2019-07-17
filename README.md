@@ -136,16 +136,16 @@ Command Line Options
 | <pre>-d, --dir</pre>     | The directory relative to where the script is run to output the screenshots to. |
 | <pre>-D, --delay</pre>   | The number of milliseconds to delay after loading before taking a picture of the page. |
 | <pre>-f, --fit</pre>     | Fit the screenshot to the provided height and width. |
-| <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Use "--fit" if you want the screenshot to only capture the viewport width and height. Defaults to 900 |
-| <pre>--jpg</pre>         | Set the image type for screenshots to be "jpg". Alternate method to using -t. |
+| <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Use `--fit` if you want the screenshot to only capture the viewport width and height. Defaults to `900`. |
+| <pre>--jpg</pre>         | Set the image type for screenshots to be `jpg`. Alternate method to using `-t`. |
 | <pre>-n, --name</pre>    | The name of the file to save the screenshot as. It can also be a [name format](#dynamic-file-names) that will be used to build the filename for each screenshot. If you're not setting a name format, then the name only applies to the first URL so it's only useful if getting just one screenshot. |
-| <pre>--png</pre>         | Set the image type for screenshots to be "png". Alternate method to using -t. |
-| <pre>-s, --size</pre>    | A viewport size to capture the screenshot in. The format is WIDTHxHEIGHT. For example, 800x400 for a width of 800px and a height of 400px. Use "--fit" if you want the screenshot to only capture the viewport width and height. |
-| <pre>-t, --type</pre>    | The file type to use for the screenshots. "jpg" or "png". Defaults to "jpg". |
-| <pre>-q, --quality</pre> | The quality of the jpg image, between 0-100. Not applicable to png image. Defaults to 100 |
+| <pre>--png</pre>         | Set the image type for screenshots to be `png`. Alternate method to using `-t`. |
+| <pre>-s, --size</pre>    | A viewport size to capture the screenshot in. The format is `WIDTHxHEIGHT`. For example, `800x400` for a width of 800px and a height of 400px. Use `--fit` if you want the screenshot to only capture the viewport width and height. |
+| <pre>-t, --type</pre>    | The file type to use for the screenshots. `jpg` or `png`. Defaults to `jpg`. |
+| <pre>-q, --quality</pre> | The quality of the jpg image, between 0-100. Not applicable to png image. Defaults to `100`. |
 | <pre>-u, --url</pre>     | URL to get the screenshot of. You can specify this parameter multiple times to get a screenshot of multiple web pages. |
-| <pre>-W, --width</pre>   | Integer width of the viewport to take the screenshot in. Defaults to 1300 |
-| <pre>-v, --version</pre> | Output the version number |
+| <pre>-W, --width</pre>   | Integer width of the viewport to take the screenshot in. Defaults to `1300`. |
+| <pre>-v, --version</pre> | Output the version number. |
 | <pre>--clipH</pre>       | The height of the clip area. |
 | <pre>--clipW</pre>       | The width of the clip area. |
 | <pre>--clipX</pre>       | The x-coordinate of top-left corner of clip area. |
@@ -297,7 +297,7 @@ The above specifies 3 URLs to get screenshots for and 3 different viewport sizes
 
 > **NOTE: The contents of the JSON file needs to be valid JSON. Use double quotes instead of single quotes.**
 
-### JSON values
+### JSON Options
 
 Below is a description of each of the JSON keys that you can set values for.
 
@@ -306,10 +306,18 @@ Only the `urls` value is actually required. If the others aren't set then the de
 | Name       | Description  |
 | :--------- | ------------ |
 | baseUrl    | The base URL value. If set then each URL will be appended to this value. If it's not set then it's not used and each URL should be the full URL. |
+| clip       | The X, Y, width, and height of a clip to capture instead of the full screen or specified width and height. It would be an object. For example: `"clip": {x 0, y: 100, w: 800, h: 400}` |
+| delay      | The number of milliseconds to delay after loading before taking a picture of the page. |
+| dir        | The directory relative to where the script is run to output the screenshots to. |
+| height     | Integer height of the viewport to take the screenshot in. Use `"fit": true` if you want the screenshot to only capture the viewport width and height. Defaults to `900` if no sizes are set. |
+| fit        | Whether or not to fit the the screenshot to the provided height and width. |
+| full       | Whether or not to have the screenshot capture the full width and height of the page. |
 | name       | The [name format](#dynamic-file-names) to use to build the file name for each screenshot. Defaults to `{url}-{width}` if not set. |
+| quality    | The quality of the jpg image, between 0-100. Not applicable to png image. Defaults to `100`. |
 | sizes      | An array of viewport sizes to get the screenshots in. Defaults to `1300x900` if not set.|
-| type       | The file type to use for the screenshots. "jpg" or "png". Defaults to `jpg` if not set. |
+| type       | The file type to use for the screenshots. `jpg` or `png`. Defaults to `jpg` if not set. |
 | urls       | An array of URLs to get screenshots for. You can either set each one as a string, or they can be a JSON object overriding configuration options for each URL. |
+| width      | Integer width of the viewport to take the screenshot in. Defaults to `1300` if no sizes are set. |
 
 
 ### Initialize the JSON file
@@ -360,6 +368,77 @@ When specifying the name of the JSON config file you don't have to include the `
 ```
 page-shots -c 'my-file'
 ```
+
+### Sample JSON
+
+Below is an example of all of the available options.
+
+You wouldn't use all of the options as some of them override other options. For example, you wouldn't set `sizes`, `width` and `height` because `sizes` override `width` and `height`. Also, `fit` and `full` do essentially the same thing.
+
+```
+{
+    "baseUrl": "https://www.branchcms.com",
+    "clip": {x: 20, y: 105, w: 800, h: 400},
+    "delay": 400,
+    "dir": "screenshots",
+    "height": 900,
+    "fit": true,
+    "full": false,
+    "name": "site-{url}-{width}-{height}-{fit}",
+    "quality": 80,
+    "sizes": [
+        "1500x1200",
+        "1000x800",
+        {
+            "width": 600,
+            "height": 500
+        },
+        {
+            "width": 400,
+            "height": 400,
+            "fit": true
+        },
+        {
+            "width": 800,
+            "height": 400,
+            "full": false
+        }
+    ],
+    "type": "jpg",
+    "urls": [
+        "/",
+        "/contact",
+        "https://www.google.com",
+        {
+            "url": "/pricing",
+            "delay": 0,
+            "dir": "pricing-screenshots",
+            "height": 400,
+            "fit": false,
+            "full": true,
+            "name": "pricing-{width}.jpg",
+            "quality": 70,
+            "sizes": [
+                "1200x800",
+                {
+                    "width": 800,
+                    "height": 400",
+                    "fit": true
+                }
+            ],
+            "type": "jpg",
+            "width": 1400
+        }
+    ]
+    "width": 1000
+}
+```
+
+As you can see in the above example both `sizes` and `urls` can be used to override configuration values.
+
+If you use a JSON object for a size then you can also specify if the screenshot should fit the height and width. This can be done by using the `fit` or `full` option.
+
+If you use a JSON object for a URL then you can override all other options for that individual URL.
 
 License
 -----------------
