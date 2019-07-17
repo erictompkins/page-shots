@@ -885,9 +885,15 @@ class jsonParse {
     parse() {
         let file,
             returnData = false;
-        if (fs.existsSync(this.file)) {
-            file = fs.readFileSync(this.file, 'utf8');
-            returnData = JSON.parse(file);
+        try {
+            if (fs.existsSync(this.file)) {
+                file = fs.readFileSync(this.file, 'utf8');
+                returnData = JSON.parse(file);
+            }
+        } catch (err) {
+            console.log(chalk.red('Error while reason the JSON config file ' + this.file));
+            console.log(chalk.red(err));
+            process.exit();
         }
         return returnData;
     }
