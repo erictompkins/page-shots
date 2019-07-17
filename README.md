@@ -130,6 +130,7 @@ Command Line Options
 | Argument                 | Description |
 | :----------------------- | :---------- |
 | <pre>-b, --base</pre>    | The base URL value. If set then the URL will be appended to this value. |
+| <pre>-c, --config</pre>  | The name of the JSON config file to use to get the screenshots. If this is set all other arguments are ignored. |
 | <pre>-d, --dir</pre>     | The directory relative to where the script is run to output the screenshots to. |
 | <pre>-D, --delay</pre>   | The number of milliseconds to delay after loading before taking a picture of the page. |
 | <pre>-f, --fit</pre>     | Fit the screenshot to the provided height and width. |
@@ -276,6 +277,7 @@ Below is an example JSON file:
 
 ```
 {
+    "name": "{url}-{width}-{height}.png"
     "urls": [
         "https://www.branchcms.com",
         "https://www.branchcms.com/pricing"
@@ -291,6 +293,8 @@ Below is an example JSON file:
 
 The above specifies 3 URLs to get screenshots for and 3 different viewport sizes to save each screenshot as.
 
+> **NOTE: The contents of the JSON file needs to be valid JSON. Use double quotes instead of single quotes.**
+
 ### JSON values
 
 Below is a description of each of the JSON keys that you can set values for.
@@ -300,7 +304,7 @@ Only the `urls` value is actually required. If the others aren't set then the de
 | Name       | Description  |
 | :--------- | ------------ |
 | baseUrl    | The base URL value. If set then each URL will be appended to this value. If it's not set then it's not used and each URL should be the full URL. |
-| nameFormat | The [name format](#dynamic-file-names) to use to build the file name for each screenshot. Defaults to `{url}-{width}` if not set. |
+| name       | The [name format](#dynamic-file-names) to use to build the file name for each screenshot. Defaults to `{url}-{width}` if not set. |
 | sizes      | An array of viewport sizes to get the screenshots in. Defaults to `1300x900` if not set.|
 | type       | The file type to use for the screenshots. "jpg" or "png". Defaults to `jpg` if not set. |
 | urls       | An array of URLs to get screenshots for. You can either set each one as a string, or they can be a JSON object overriding configuration options for each URL. |
@@ -322,6 +326,38 @@ You can specify your own name for the JSON file by passing a value after the `in
 page-shots init myfile.json
 ```
 
+Note, you don't have to specify the `.json` file extension. If the extension is not set or it's not equal to "json" then `.json` is added as the file extension. 
+
+```
+page-shots init myfile
+```
+
+The above is the same as:
+
+```
+page-shots init myfile.json
+```
+
+### Use the JSON configuration file
+
+There are two ways to use the JSON configuration file.
+
+1. Simply run `page-shots` on the command line with no arguments. In this case the program will look for a file called `shots.json` in the current directory.
+2. Specify the name of the JSON file to use.
+
+#### Specify the name of the JSON file to use
+
+Use the `-c` or `--config` argument to specify the JSON config file to use. If you use this argument any other arguments are ignored.
+
+```
+page-shots -c 'my-file.json'
+```
+
+When specifying the name of the JSON config file you don't have to include the `.json` extension. If the extension of the file is not `.json` then it's automatically added.
+
+```
+page-shots -c 'my-file'
+```
 
 License
 -----------------

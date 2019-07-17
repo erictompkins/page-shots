@@ -56,6 +56,9 @@ class PageShots {
         this.page = null;
     }
 
+    /**
+     * Initialize the browser and page objects
+     */
     async init() {
         let _self = this;
         this.browser = await puppeteer.launch();
@@ -64,6 +67,42 @@ class PageShots {
         this.page.on('load', function() {
             _self.pageSpinner.succeed(chalk.green(this.url() + ' loaded in ' + _self._getPageElapsedTime()));
         });
+    }
+
+    /**
+     * Sets the configuration in a JSON object
+     * @param {object} json 
+     */
+    setConfigJson(json) {
+        if (json !== false && typeof json === 'object') {
+            this.setBaseUrl(json.baseUrl);
+            this.setDir(json.dir);
+            this.setFileType(json.type);
+            this.addUrl(json.urls);
+            this.addSize(json.sizes);
+            this.setWidth(json.width);
+            this.setHeight(json.height);
+            this.setDelay(json.delay);
+            if (typeof json.fit !== 'undefined') {
+                if (json.fit === 'y' || json.fit === 'yes' || json.fit === true || json.fit === 'true') {
+                    this.setFullScreen(false);
+                }
+            } else if (typeof json.fullScreen !== 'undefined') {
+                if (json.fullScreen !== 'y' && json.fullScreen !== 'yes' && json.fullScreen !== true && json.fullScreen !== 'true') {
+                    this.setFullScreen(false);
+                }
+            }
+            this.setName(json.nameFormat);
+            this.setQuality(json.quality);
+            if (typeof json.clip !== 'undefined'
+                && typeof json.clip.x !== 'undefined'
+                && typeof json.clip.y !== 'undefined'
+                && typeof json.clip.w !== 'undefined'
+                && typeof json.clip.h !== 'undefined'
+            ) {
+                this.setClip(json.clip.x, json.clip.y, json.clip.w, json.clip.h);
+            }
+        }
     }
 
     /**
@@ -360,10 +399,10 @@ class PageShots {
                 this._printElapsedTime();
             }
         } catch (err) {
-            if (typeof this.shotSpinner !== null) {
+            if (this.shotSpinner !== null) {
                 this.shotSpinner.stop();
             }
-            if (typeof this.delaySpinner !== null) {
+            if (this.delaySpinner !== null) {
                 this.delaySpinner.stop();
             }
             await this.die();
@@ -801,4 +840,53 @@ class PageShots {
     }
 }
 
+/**
+ * JSON parser
+ */
+class jsonParse {
+    /**
+     * Constructor
+     */
+    constructor() {
+        this.file = 'shots.json';
+    }
+
+    /**
+     * Set the JSON file name
+     * @param {string} file The file name
+     */
+    setFile(file) {
+        if (typeof file === 'string' && file.length > 0) {
+            let ext = path.extname(file).toLowerCase().replace('.', '');
+            if (ext.length === 0) {
+                file += '.json';
+            }
+            this.file = file;
+        }
+    }
+
+    /**
+     * Gets the name of the JSON file
+     * @return {string}
+     */
+    getFile() {
+        return this.file;
+    }
+
+    /**
+     * Parse the JSON file
+     * @return {object|false}
+     */
+    parse() {
+        let file,
+            returnData = false;
+        if (fs.existsSync(this.file)) {
+            file = fs.readFileSync(this.file, 'utf8');
+            returnData = JSON.parse(file);
+        }
+        return returnData;
+    }
+}
+
 exports.pageShots = new PageShots();
+exports.json = new jsonParse();

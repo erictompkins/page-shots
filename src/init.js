@@ -51,7 +51,7 @@ class InitJson {
     build() {
         let json = {
             baseUrl: '',
-            nameFormat: '{url}-{width}',
+            name: '{url}-{width}',
             type: 'jpg',
             urls: [],
             sizes: [

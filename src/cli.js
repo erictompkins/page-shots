@@ -2,10 +2,12 @@
  * Command line interface
  */
 const program = require('commander'),
+    chalk = require('chalk'),
     pkg = require('../package.json'),
     main = require('./main'),
     init = require('./init'),
-    pageShots = main.pageShots;
+    pageShots = main.pageShots,
+    json = main.json;
 
 let getScreenshots = true
 
@@ -24,6 +26,7 @@ program
   .version(pkg.version, '-v, --version')
   .description(pkg.description)
   .option('-b, --base <string>', 'The base URL value. If set then the URL will be appended to this value.')
+  .option('-c, --config <string>', 'The name of the JSON config file to use to get the screenshots. If this is set all other arguments are ignored.')
   .option('-d, --dir <string>', 'The directory relative to where the script is run to output the screenshots to.')
   .option('-D, --delay <integer>', 'The number of milliseconds to delay after loading before taking a picture of the page.')
   .option('-f, --fit', 'Fit the screenshot to the provided height and width.')
@@ -41,6 +44,7 @@ program
   .option('--clipX <integer>', 'The x-coordinate of top-left corner of clip area.')
   .option('--clipY <integer>', 'The y-coordinate of top-left corner of clip area.');
 
+// Set up the initialization action to create the JSON config file.
 program
     .command('init [file]')
     .description('Initialize the JSON file that is used to configure the URLs to get screenshots of.')
@@ -71,58 +75,76 @@ program.on('--help', function() {
  */
 async function cli() {
     try {
+        let hasUrl = false;
         program.parse(process.argv);
         if (getScreenshots) {
             // Initialize pageShots
             await pageShots.init();
 
             // Handle the arguments
-            if (program.base) {
-                pageShots.setBaseUrl(program.base);
+            if (program.config) {
+                // A config file was set
+                json.setFile(program.config);
+            } else {
+                // Work with other arguments
+                if (program.base) {
+                    pageShots.setBaseUrl(program.base);
+                }
+                if (program.dir) {
+                    pageShots.setDir(program.dir);
+                }
+                if (program.url.length > 0) {
+                    hasUrl = true;
+                    pageShots.addUrl(program.url);
+                }
+                if (program.height) {
+                    pageShots.setHeight(program.height);
+                }
+                if (program.width) {
+                    pageShots.setWidth(program.width);
+                }
+                if (program.fit) {
+                    pageShots.setFullScreen(false);
+                }
+                if (program.type) {
+                    pageShots.setFileType(program.type);
+                }
+                if (program.png) {
+                    pageShots.setFileType('png');
+                }
+                if (program.jpg) {
+                    pageShots.setFileType('jpg');
+                }
+                if (program.quality) {
+                    pageShots.setQuality(program.quality);
+                }
+                if (program.delay) {
+                    pageShots.setDelay(program.delay);
+                }
+                if (program.size) {
+                    pageShots.addSize(program.size);
+                }
+                if (
+                    typeof program.clipX !== 'undefined' 
+                    && typeof program.clipY !== 'undefined'
+                    && typeof program.clipW !== 'undefined' 
+                    && typeof program.clipH !== 'undefined'
+                ) {
+                    pageShots.setClip(program.clipX, program.clipY, program.clipW, program.clipH);
+                }
+                if (program.name) {
+                    pageShots.setName(program.name);
+                }
             }
-            if (program.dir) {
-                pageShots.setDir(program.dir);
-            }
-            if (program.url) {
-                pageShots.addUrl(program.url);
-            }
-            if (program.height) {
-                pageShots.setHeight(program.height);
-            }
-            if (program.width) {
-                pageShots.setWidth(program.width);
-            }
-            if (program.fit) {
-                pageShots.setFullScreen(false);
-            }
-            if (program.type) {
-                pageShots.setFileType(program.type);
-            }
-            if (program.png) {
-                pageShots.setFileType('png');
-            }
-            if (program.jpg) {
-                pageShots.setFileType('jpg');
-            }
-            if (program.quality) {
-                pageShots.setQuality(program.quality);
-            }
-            if (program.delay) {
-                pageShots.setDelay(program.delay);
-            }
-            if (program.size) {
-                pageShots.addSize(program.size);
-            }
-            if (
-                typeof program.clipX !== 'undefined' 
-                && typeof program.clipY !== 'undefined'
-                && typeof program.clipW !== 'undefined' 
-                && typeof program.clipH !== 'undefined'
-            ) {
-                pageShots.setClip(program.clipX, program.clipY, program.clipW, program.clipH);
-            }
-            if (program.name) {
-                pageShots.setName(program.name);
+
+            if (!hasUrl) {
+                // No URLs were specified. Parse the JSON config file if possible
+                let jsonConfig = json.parse();
+                if (jsonConfig) {
+                    pageShots.setConfigJson(jsonConfig);
+                } else {
+                    console.log(chalk.red(json.getFile() + ' could not be found'));
+                }
             }
             pageShots.run();
         }
