@@ -9,6 +9,15 @@ const puppeteer = require('puppeteer'),
     ora = require('ora');
 
 /**
+ * Sleeps the program
+ * @link https://flaviocopes.com/javascript-sleep/
+ * @param {Number} milliseconds 
+ */
+function wait (ms) {
+    return new Promise(resolve => setTimeout(() => resolve(), ms));
+}
+
+/**
  * Main class to run and process the screenshots
  */
 class PageShots {
@@ -36,10 +45,11 @@ class PageShots {
         this.quality = 100;
         // The number of milliseconds to delay after loading before taking a picture of the page
         this.delay = 0;
-        // Holds the spinner for loading a page and taking a screenshot
+        // Spinners
         this.pageSpinner = null;
         this.shotSpinner = null;
         this.delaySpinner = null;
+        this.scrollSpinner = null;
         // Holds the viewport width to get the screenshot in
         this.width = 1300;
         // Holds the viewport height to get the screenshot in
@@ -364,18 +374,11 @@ class PageShots {
                     this._createDir(url.dir);
                     this.pageSpinner = ora({text: 'Loading ' + url.url, spinner: 'arc'}).start();
                     try {
-                        await this.page.goto(url.url);
+                        await this.page.goto(url.url, {waitUntil: 'load'});
                     } catch (err) {
                         this.pageSpinner.fail(chalk.red('Could not load ' + url.url + '. ' + err));
                         console.log('');
                         continue;
-                    }
-                    
-                    // Sleep if necessary
-                    if (url.delay > 0) {
-                        this.delaySpinner = ora({text: 'Delaying ' + url.delay + ' milliseconds', spinner: 'arc'}).start();
-                        await this._sleep(url.delay);
-                        this.delaySpinner.succeed(chalk.green('Delayed ' + url.delay + ' milliseconds'));
                     }
 
                     // Get the screenshots
@@ -396,7 +399,6 @@ class PageShots {
                         await this._screenshot(url);
                     }
                     
-                    
                     // Empty line after each URL run
                     console.log('');
                 }
@@ -411,12 +413,7 @@ class PageShots {
                 this._printElapsedTime();
             }
         } catch (err) {
-            if (this.shotSpinner !== null) {
-                this.shotSpinner.stop();
-            }
-            if (this.delaySpinner !== null) {
-                this.delaySpinner.stop();
-            }
+            this._stopSpinners();
             await this.die();
             console.log(err);
             return null;
@@ -424,30 +421,9 @@ class PageShots {
     }
 
     /**
-     * Sleeps the program
-     * @link https://flaviocopes.com/javascript-sleep/
-     * @param {Number} milliseconds 
+     * Stops any spinners
      */
-    _sleep(milliseconds) {
-        return new Promise(resolve => setTimeout(resolve, milliseconds))
-    }
-
-    /**
-     * Gets the screenshot of the image
-     * @param {object} url The URL object
-     */
-    async _screenshot(url) {
-        // Save image screenshot
-        this.shotSpinner = ora({text: 'Starting ' + url.type + ' screenshot ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)', spinner: 'arc'}).start();
-        await this.page.setViewport(this._getViewportConfig(url));
-        await this.page.screenshot(this._getScreenshotConfig(url));
-        this.shotSpinner.succeed(chalk.green('Saved ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)'));
-    }
-
-    /**
-     * Kills everything in case of an error
-     */
-    async die() {
+    _stopSpinners() {
         if (this.pageSpinner !== null) {
             this.pageSpinner.stop();
         }
@@ -457,6 +433,79 @@ class PageShots {
         if (this.delaySpinner !== null) {
             this.delaySpinner.stop();
         }
+        if (this.scrollSpinner !== null) {
+            this.scrollSpinner.stop();
+        }
+    }
+
+    /**
+     * Gets the screenshot of the image
+     * 
+     * Some code borrowed from @link https://www.screenshotbin.com/blog/handling-lazy-loaded-webpages-puppeteer
+     * Some code borrowed from @link https://stackoverflow.com/a/49233383
+     * @param {object} url The URL object
+     */
+    async _screenshot(url) {
+        this.scrollSpinner = ora({text: 'Scrolling page to try and force all content to load', spinner: 'arc'}).start();
+        await this.page.setViewport(this._getViewportConfig(url));
+        
+        // Get the height of the rendered page
+        const bodyHandle = await this.page.$('body');
+        const { height } = await bodyHandle.boundingBox();
+        await bodyHandle.dispose();
+
+        // Scroll one viewport at a time, pausing to let content load
+        const viewportHeight = this.page.viewport().height;
+        let viewportIncr = 0;
+        while (viewportIncr + viewportHeight < height) {
+            await this.page.evaluate(_viewportHeight => {
+                window.scrollBy(0, _viewportHeight);
+            }, viewportHeight);
+            await wait(20);
+            viewportIncr = viewportIncr + viewportHeight;
+        }
+
+        // Scroll back to top
+        await this.page.evaluate(_ => {
+            window.scrollTo(0, 0);
+        });
+
+        // // Some extra delay to check and make sure that all images loaded
+        let x = await this.page.evaluate(async () => {
+            const selectors = Array.from(document.querySelectorAll("img"));
+            let y = await Promise.all(selectors.map(img => {
+              if (img.complete) return img;
+              return new Promise((resolve, reject) => {
+                img.addEventListener('load', resolve);
+                img.addEventListener('error', reject);
+              });
+            }));
+            return y;
+          });
+        
+         // Some extra delay to let images load
+        await wait(100);
+
+        this.scrollSpinner.succeed(chalk.green('Page fully scrolled'));
+
+        // Sleep if necessary
+        if (url.delay > 0) {
+            this.delaySpinner = ora({text: 'Delaying ' + url.delay + ' milliseconds', spinner: 'arc'}).start();
+            await wait(url.delay);
+            this.delaySpinner.succeed(chalk.green('Delayed ' + url.delay + ' milliseconds'));
+        }
+  
+        // Save image screenshot
+        this.shotSpinner = ora({text: 'Starting ' + url.type + ' screenshot ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)', spinner: 'arc'}).start();
+        await this.page.screenshot(this._getScreenshotConfig(url));
+        this.shotSpinner.succeed(chalk.green('Saved ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)'));
+    }
+
+    /**
+     * Kills everything in case of an error
+     */
+    async die() {
+        this._stopSpinners();
         if (this.browser !== null) {
             await this.browser.close();
         }
