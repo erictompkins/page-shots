@@ -26,6 +26,7 @@ Table Of Contents
 - [Setting Screenshot Size](#setting-screenshot-size)
 - [Setting URLs](#setting-urls)
 - [Delaying the Screenshot](#delaying-the-screenshot)
+- [Lazy Loaded Content](#lazy-loaded-content)
 - [Command Line Options](#command-line-options)
 - [Command Line Examples](#command-line-examples)
 - [Use a JSON file to specify one or more URLs and configuration](#use-a-json-file-to-specify-one-or-more-urls-and-configuration)
@@ -126,6 +127,14 @@ Delaying the Screenshot
 If you need to wait for certain assets to load on the page before taking the screenshot then you set a specific number of milliseconds to wait after the page loads and before the screenshot is taken.
 
 An example scenario could be if you have a Google Map section on the page and you want to make sure that it fully loads before taking the screenshot.
+
+The delay happens after the page has loaded, the page has been scrolled from top to bottom, and right before the screenshot is taken.
+
+
+Lazy Loaded Content
+-----------------
+
+Page Shots does it's best to handle lazy loaded content by first scrolling the entire page before taking the screenshot. A small delay of 100ms is then taken before doing the screenshot. The script then waits for all images to return that they have loaded. However, loading doesn't always mean displayed. If the screenshot doesn't display all images then the correct approach would be to add a [delay](#delaying-the-screenshot) before the screenshot is taking. 500 to 1000 milliseconds is often sufficient.
 
 Command Line Options
 -----------------
