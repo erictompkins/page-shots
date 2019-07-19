@@ -516,7 +516,7 @@ class PageShots {
      */
     _createDir(dir) {
         if (dir.length > 0 && !fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
+            fs.mkdirSync(dir, {recursive: true});
         }
     }
 
