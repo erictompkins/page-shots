@@ -65,7 +65,8 @@ For example, if the URL is `https://www.branchcms.com` then the file name will b
 
 You can specify a file name for the screenshot. The file name can be just the name without the extension, or if can include the "jpg" or "png" extension. If the file name does not have an extension or it doesn't match either "jpg" or "png" extension then the correct extension based on the `type` argument will be used.
 
-### Dynamic file names
+Dynamic file names
+-----------------
 
 Instead of specifying a specific file name, you can specify a format to follow. There are a few placeholders that you can use in the file name to be replaced with information about the screenshot.
 
