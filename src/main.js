@@ -486,7 +486,7 @@ class PageShots {
          // Some extra delay to let images load
         await wait(100);
 
-        this.scrollSpinner.succeed(chalk.green('Page fully scrolled'));
+        this.scrollSpinner.stop();
 
         // Sleep if necessary
         if (url.delay > 0) {
@@ -496,9 +496,17 @@ class PageShots {
         }
   
         // Save image screenshot
-        this.shotSpinner = ora({text: 'Starting ' + url.type + ' screenshot ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)', spinner: 'arc'}).start();
-        await this.page.screenshot(this._getScreenshotConfig(url));
-        this.shotSpinner.succeed(chalk.green('Saved ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)'));
+        try {
+            this.shotSpinner = ora({text: 'Starting ' + url.type + ' screenshot ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)', spinner: 'arc'}).start();
+            await this.page.screenshot(this._getScreenshotConfig(url));
+            this.shotSpinner.succeed(chalk.green('Saved ' + url.path + ' (' + url.width + 'px / ' + url.height + 'px)'));
+        } catch (err) {
+            if (this.shotSpinner !== null) {
+                this.shotSpinner.stop();
+            }
+            console.log(chalk.red('Error while taking the screenshot'));
+            console.log(chalk.red(err));
+        }
     }
 
     /**
