@@ -370,11 +370,11 @@ class PageShots {
      * Get the screenshots of all of the URLs
      */
     async run() {
-        var _self = this,
-            fullScreen,
-            size,
+        var delay,
             dir,
-            delay;
+            fullScreen,
+            name,
+            size;
         try {
             console.log('');
             if (this.urls.length > 0) {
@@ -392,19 +392,13 @@ class PageShots {
 
                     // Get the screenshots
                     if (url.sizes.length > 0) {
-                        fullScreen = url.fullScreen;
-                        dir = url.dir;
                         delay = url.delay;
+                        dir = url.dir;
+                        fullScreen = url.fullScreen;
+                        name = url.name;
                         for (size of url.sizes) {
                             url.width = size.width;
                             url.height = size.height;
-
-                            // Check to see if the size should be full screen
-                            if (typeof size.full !== 'undefined' || typeof size.fit !== 'undefined') {
-                                url.fullScreen = this._getFullScreen(size);
-                            } else {
-                                url.fullScreen = fullScreen;
-                            }
 
                             // Override the delay if necessary
                             if (typeof size.delay !== 'undefined') {
@@ -428,11 +422,25 @@ class PageShots {
                                 url.dir = dir;
                             }
 
+                            // Check to see if the size should be full screen
+                            if (typeof size.full !== 'undefined' || typeof size.fit !== 'undefined') {
+                                url.fullScreen = this._getFullScreen(size);
+                            } else {
+                                url.fullScreen = fullScreen;
+                            }
+
                             // See if the size name was set
                             if (typeof size.key === 'string' && size.key.length > 0) {
                                 url.sizeName = size.key;
                             } else {
                                 url.sizeName = '';
+                            }
+
+                            // Override the name if necessary
+                            if (typeof size.name === 'string' && size.name.length > 0) {
+                                url.name = size.name;
+                            } else {
+                                url.name = name;
                             }
 
                             // Regenerate the file name and path
@@ -637,6 +645,12 @@ class PageShots {
         delete url.path;
         url.filename = this._getFilename(url);
         url.path = this._getPath(url);
+
+        // Set the file type again in case the filename extension changes it
+        let ext = this._validateType(path.extname(url.filename).toLowerCase().replace('.', ''));
+        if (ext) {
+            url.type = ext;
+        }
         return url;
     }
 

@@ -423,7 +423,8 @@ You wouldn't use all of the options as some of them override other options. For 
         {
             "width": 400,
             "height": 400,
-            "fit": true
+            "fit": true,
+            "name": "small-{stub}"
         },
         {
             "width": 800,
@@ -431,7 +432,8 @@ You wouldn't use all of the options as some of them override other options. For 
             "full": false,
             "dir": "medium",
             "key": "medium-shot",
-            "delay": 1500
+            "delay": 1500,
+            "name" "med-{stub}.png"
         }
     ],
     "type": "jpg",
@@ -483,6 +485,7 @@ Below are the values that you can override in the size object
 - dir
 - fit
 - full
+- name
   
 You can also set the `key` value to specify a name for the size that can be used to replace the `{size}` placeholder in the [dynamic file name](#dynamic-file-names).
 
