@@ -364,14 +364,16 @@ class PageShots {
      * Get the screenshots of all of the URLs
      */
     async run() {
-        var _self = this;
+        var _self = this,
+            fullScreen,
+            size,
+            dir;
         try {
             console.log('');
             if (this.urls.length > 0) {
                 for (let url of this.urls) {
                     this.pageStartTime = process.hrtime();
                     url = this._setupUrl(url);
-                    this._createDir(url.dir);
                     this.pageSpinner = ora({text: 'Loading ' + url.url, spinner: 'arc'}).start();
                     try {
                         await this.page.goto(url.url, {waitUntil: 'load'});
@@ -383,19 +385,40 @@ class PageShots {
 
                     // Get the screenshots
                     if (url.sizes.length > 0) {
-                        let fullScreen = url.fullScreen;
-                        for (let size of url.sizes) {
+                        fullScreen = url.fullScreen;
+                        dir = url.dir;
+                        for (size of url.sizes) {
                             url.width = size.width;
                             url.height = size.height;
+
+                            // Check to see if the size should be full screen
                             if (typeof size.full !== 'undefined' || typeof size.fit !== 'undefined') {
                                 url.fullScreen = this._getFullScreen(size);
                             } else {
                                 url.fullScreen = fullScreen;
                             }
+
+                            // Check to see if the size has a separate directory
+                            if (typeof size.dir !== 'undefined' && size.dir.length > 0) {
+                                url.dir = size.dir;
+                            } else {
+                                url.dir = dir;
+                            }
+
+                            // Regenerate the file name and path
                             url = this._regenerateFilename(url);
+                            
+                            // Make sure that the directory exists
+                            this._createDir(path.dirname(url.path));
+
+                            // Take the screenshot
                             await this._screenshot(url);    
                         }
                     } else {
+                        // Make sure that the directory exists
+                        this._createDir(path.dirname(url.path));
+                        
+                        // Take the screenshot
                         await this._screenshot(url);
                     }
                     

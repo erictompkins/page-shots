@@ -427,7 +427,8 @@ You wouldn't use all of the options as some of them override other options. For 
         {
             "width": 800,
             "height": 400,
-            "full": false
+            "full": false,
+            "dir": "medium"
         }
     ],
     "type": "jpg",
