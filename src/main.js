@@ -375,7 +375,9 @@ class PageShots {
             fullScreen,
             name,
             quality,
-            size;
+            size,
+            type,
+            typeTemp;
         try {
             console.log('');
             if (this.urls.length > 0) {
@@ -397,6 +399,8 @@ class PageShots {
                         dir = url.dir;
                         fullScreen = url.fullScreen;
                         name = url.name;
+                        quality = url.quality;
+                        type = url.type;
                         for (size of url.sizes) {
                             url.width = size.width;
                             url.height = size.height;
@@ -434,7 +438,11 @@ class PageShots {
                                 size.quality = parseInt(size.quality);
                                 if (size.quality > 0 && size.quality <= 100) {
                                     url.quality = size.quality;
+                                } else {
+                                    url.quality = quality;
                                 }
+                            } else {
+                                url.quality = quality;
                             }
 
                             // See if the size name was set
@@ -449,6 +457,14 @@ class PageShots {
                                 url.name = size.name;
                             } else {
                                 url.name = name;
+                            }
+
+                            // Check the size is specifying a type
+                            typeTemp = this._validateType(size.type);
+                            if (typeTemp) {
+                                url.type = typeTemp;
+                            } else {
+                                url.type = type;
                             }
 
                             // Regenerate the file name and path

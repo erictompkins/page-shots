@@ -65,6 +65,10 @@ For example, if the URL is `https://www.branchcms.com` then the file name will b
 
 You can specify a file name for the screenshot. The file name can be just the name without the extension, or if can include the "jpg" or "png" extension. If the file name does not have an extension or it doesn't match either "jpg" or "png" extension then the correct extension based on the `type` argument will be used.
 
+If the file name does have an extension and the extension is `jpg` or `png`, then that will always override the file type. The file type will be set to match the extension.
+
+The file name can include a directory path. For example: `screenshots/shot-{stub}-{width}.jpg`. If it does then the full path set by the file name will be appended to the directory setting value if that was specified.
+
 Dynamic file names
 -----------------
 
@@ -309,6 +313,8 @@ The above specifies 3 URLs to get screenshots for and 3 different viewport sizes
 
 > **NOTE: The contents of the JSON file needs to be valid JSON. Use double quotes instead of single quotes.**
 
+Validate your JSON at [jsonlint.com](https://jsonlint.com/) if you're having any troubles.
+
 ### JSON Options
 
 Below is a description of each of the JSON keys that you can set values for.
@@ -425,7 +431,8 @@ You wouldn't use all of the options as some of them override other options. For 
             "height": 400,
             "fit": true,
             "name": "small-{stub}-{quality}",
-            "quality": 80
+            "quality": 80,
+            "type": "png"
         },
         {
             "width": 800,
@@ -434,7 +441,7 @@ You wouldn't use all of the options as some of them override other options. For 
             "dir": "medium",
             "key": "medium-shot",
             "delay": 1500,
-            "name" "med-{stub}.png"
+            "name": "med-{stub}.png"
         }
     ],
     "type": "jpg",
@@ -488,6 +495,7 @@ Below are the values that you can override in the size object
 - full
 - name
 - quality
+- type
   
 You can also set the `key` value to specify a name for the size that can be used to replace the `{size}` placeholder in the [dynamic file name](#dynamic-file-names).
 
