@@ -331,6 +331,21 @@ Only the `urls` value is actually required. If the others aren't set then the de
 | width      | Integer width of the viewport to take the screenshot in. Defaults to `1300` if no sizes are set. |
 
 
+### Minimum JSON file
+
+The minimum data that you need in the JSON file is the `urls`. All the other values have defaults.
+
+Below is the bare minimum necessary in the JSON file.
+
+```
+{
+    "urls": [
+        "https://www.branchcms.com"
+    ]
+}
+```
+
+
 ### Initialize the JSON file
 
 A utility command can be used to generate a boilerplate JSON file.
