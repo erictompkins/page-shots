@@ -374,6 +374,7 @@ class PageShots {
             dir,
             fullScreen,
             name,
+            quality,
             size;
         try {
             console.log('');
@@ -427,6 +428,13 @@ class PageShots {
                                 url.fullScreen = this._getFullScreen(size);
                             } else {
                                 url.fullScreen = fullScreen;
+                            }
+
+                            if (typeof size.quality !== 'undefined') {
+                                size.quality = parseInt(size.quality);
+                                if (size.quality > 0 && size.quality <= 100) {
+                                    url.quality = size.quality;
+                                }
                             }
 
                             // See if the size name was set
