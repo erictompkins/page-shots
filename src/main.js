@@ -399,10 +399,17 @@ class PageShots {
                             }
 
                             // Check to see if the size has a separate directory
-                            if (typeof size.dir !== 'undefined' && size.dir.length > 0) {
+                            if (typeof size.dir === 'string' && size.dir.length > 0) {
                                 url.dir = size.dir;
                             } else {
                                 url.dir = dir;
+                            }
+
+                            // See if the size name was set
+                            if (typeof size.key === 'string' && size.key.length > 0) {
+                                url.sizeName = size.key;
+                            } else {
+                                url.sizeName = '';
                             }
 
                             // Regenerate the file name and path
@@ -779,6 +786,11 @@ class PageShots {
             full = 'fit';
         }
 
+        // Set up the "size" portion of the name
+        if (typeof url.sizeName === 'undefined' || (typeof url.sizeName !== 'string' || url.sizeName.length == 0)) {
+            url.sizeName = url.width + 'x' + url.height;
+        }
+
         // Format the name
         name = name.replace(/{url}/g, urlName);
         name = name.replace(/{stub}/g, stub);
@@ -787,6 +799,7 @@ class PageShots {
         name = name.replace(/{quality}/g, url.quality);
         name = name.replace(/{full}/g, full);
         name = name.replace(/{fit}/g, fit);
+        name = name.replace(/{size}/g, url.sizeName);
 
         return name;
     }

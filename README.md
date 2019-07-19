@@ -76,6 +76,7 @@ Instead of specifying a specific file name, you can specify a format to follow. 
 | {full}      | `fit` if the screenshot will only be for the specified width and height. `full` if the screenshot will be for the full page. |
 | {height}    | The height of the screenshot or viewport. |
 | {quality}   | The image quality of the jpg image. |
+| {size}      | The name of the size. Set with the `key` value in a size object. If it's not set then the value will be the width and height separated by an "x". For example, `1300x800`. |
 | {stub}      | The URL stub. This would be the part of the URL after the domain name. |
 | {url}       | The filename friendly version of the URL. |
 | {width}     | The width of the screenshot. |
@@ -428,7 +429,8 @@ You wouldn't use all of the options as some of them override other options. For 
             "width": 800,
             "height": 400,
             "full": false,
-            "dir": "medium"
+            "dir": "medium",
+            "key": "medium-shot"
         }
     ],
     "type": "jpg",
@@ -468,6 +470,42 @@ If you use a JSON object for a size then you can also specify if the screenshot 
 If you use a JSON object for a URL then you can override all other options for that individual URL.
 
 If you use the `baseUrl` option but your `url` value starts with `https://` or `http://` then the `baseUrl` value will not be used for that URL.
+
+
+### Overriding configurations with the `sizes` values
+
+If you use a JSON object for an individual size then you can override some of the configuration values for that individual size.
+
+Below are the values that you can override in the size object
+
+- dir
+- fit
+- full
+  
+You can also set the `key` value to specify a name for the size that can be used to replace the `{size}` placeholder in the [dynamic file name](#dynamic-file-names).
+
+See the [sample JSON](#sample-json) above for an example of how this is done.
+
+### Overriding configurations with the `urls` values
+
+If you use a JSON object for an individual URL then you can override some of the configuration values for that individual URL.
+
+> If you also [override configuration values with an individual size](#overriding-configurations-with-the-sizes-values) then those values will override the URL values.
+
+Below are the values that you can override in the URLs object.
+
+- delay
+- dir
+- height
+- fit
+- full
+- name
+- quality
+- sizes
+- type
+- width
+
+See the [sample JSON](#sample-json) above for an example of how this is done.
 
 License
 -----------------
