@@ -28,7 +28,7 @@ program
   .option('-b, --base <string>', 'The base URL value. If set then the URL will be appended to this value.')
   .option('-c, --config <string>', 'The name of the JSON config file to use to get the screenshots. If this is set all other arguments are ignored.')
   .option('-d, --dir <string>', 'The directory relative to where the script is run to output the screenshots to.')
-  .option('-D, --delay <integer>', 'The number of milliseconds to delay after loading before taking a picture of the page.')
+  .option('-D, --delay <integer>', 'The number of milliseconds to delay after loading before taking a picture of the page. Can not be greater than ' + pageShots.maxDelay + '.')
   .option('-f, --fit', 'Fit the screenshot to the provided height and width.')
   .option('-H, --height <integer>', 'Integer height of the viewport to take the screenshot in. Use "--fit" if you want the screenshot to only capture the viewport width and height.', 900)
   .option('--jpg', 'Set the image type for screenshots to be "jpg". Alternate method to using -t.')

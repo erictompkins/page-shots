@@ -146,7 +146,7 @@ Command Line Options
 | <pre>-b, --base</pre>    | The base URL value. If set then the URL will be appended to this value. |
 | <pre>-c, --config</pre>  | The name of the JSON config file to use to get the screenshots. If this is set all other arguments are ignored. |
 | <pre>-d, --dir</pre>     | The directory relative to where the script is run to output the screenshots to. |
-| <pre>-D, --delay</pre>   | The number of milliseconds to delay after loading before taking a picture of the page. |
+| <pre>-D, --delay</pre>   | The number of milliseconds to delay after loading before taking a picture of the page. Can't be larger than 30000. |
 | <pre>-f, --fit</pre>     | Fit the screenshot to the provided height and width. |
 | <pre>-H, --height</pre>  | Integer height of the viewport to take the screenshot in. Use `--fit` if you want the screenshot to only capture the viewport width and height. Defaults to `900`. |
 | <pre>--jpg</pre>         | Set the image type for screenshots to be `jpg`. Alternate method to using `-t`. |

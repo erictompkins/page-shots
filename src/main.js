@@ -25,6 +25,9 @@ class PageShots {
      * Constructor
      */
     constructor() {
+        // Maximum delay in milliseconds
+        this.maxDelay = 30000;
+        // The base URL to prepend to each URL if necessary
         this.baseUrl = '';
         // The directory that screenshots are saved in
         this.dir = '';
@@ -286,7 +289,10 @@ class PageShots {
      */
     setDelay(delay) {
         delay = parseInt(delay);
-        if (delay > 0 && delay <= 10000) {
+        if (delay > 0) {
+            if (delay > this.maxDelay) {
+                delay = this.maxDelay;
+            }
             this.delay = delay;
         }
     }
@@ -671,7 +677,10 @@ class PageShots {
             temp;
         if (typeof url.delay !== 'undefined') {
             temp = parseInt(url.delay);
-            if (temp > 0 && temp <= 10000) {
+            if (temp > 0) {
+                if (temp > this.maxDelay) {
+                    temp = this.maxDelay;
+                }
                 delay = temp;
             }
         }

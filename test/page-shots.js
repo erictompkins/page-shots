@@ -154,10 +154,10 @@ describe('setDelay', function() {
         pageShots.setDelay(delay); 
         assert.equal(delay, pageShots.delay);
     });
-    it('should not go above 10,000', function() {
+    it('should not go above ' + pageShots.maxDelay, function() {
         pageShots.delay = 0;
         pageShots.setDelay(100000); 
-        assert.equal(0, pageShots.delay);
+        assert.equal(pageShots.maxDelay, pageShots.delay);
     });
     it('should not go below 0', function() {
         pageShots.delay = 0;
