@@ -102,7 +102,7 @@ class PageShots {
                     this.setFullScreen(false);
                 }
             }
-            this.setName(json.nameFormat);
+            this.setName(json.name);
             this.setQuality(json.quality);
             if (typeof json.clip !== 'undefined'
                 && typeof json.clip.x !== 'undefined'
