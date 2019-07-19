@@ -373,7 +373,8 @@ class PageShots {
         var _self = this,
             fullScreen,
             size,
-            dir;
+            dir,
+            delay;
         try {
             console.log('');
             if (this.urls.length > 0) {
@@ -393,6 +394,7 @@ class PageShots {
                     if (url.sizes.length > 0) {
                         fullScreen = url.fullScreen;
                         dir = url.dir;
+                        delay = url.delay;
                         for (size of url.sizes) {
                             url.width = size.width;
                             url.height = size.height;
@@ -402,6 +404,21 @@ class PageShots {
                                 url.fullScreen = this._getFullScreen(size);
                             } else {
                                 url.fullScreen = fullScreen;
+                            }
+
+                            // Override the delay if necessary
+                            if (typeof size.delay !== 'undefined') {
+                                size.delay = parseInt(size.delay);
+                                if (size.delay > 0) {
+                                    if (size.delay > this.maxDelay) {
+                                        size.delay = this.maxDelay;
+                                    }
+                                    url.delay = size.delay;
+                                } else {
+                                    url.delay = delay;
+                                }
+                            } else {
+                                url.delay = delay;
                             }
 
                             // Check to see if the size has a separate directory

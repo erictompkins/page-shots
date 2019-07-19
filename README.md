@@ -430,7 +430,8 @@ You wouldn't use all of the options as some of them override other options. For 
             "height": 400,
             "full": false,
             "dir": "medium",
-            "key": "medium-shot"
+            "key": "medium-shot",
+            "delay": 1500
         }
     ],
     "type": "jpg",
@@ -478,6 +479,7 @@ If you use a JSON object for an individual size then you can override some of th
 
 Below are the values that you can override in the size object
 
+- delay
 - dir
 - fit
 - full
