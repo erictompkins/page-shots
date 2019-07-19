@@ -239,22 +239,22 @@ class PageShots {
         if (typeof size === 'string') {
             let sizes = size.split('x');
             if (sizes.length == 2) {
-                width = sizes[0];
-                height = sizes[1];
+                width = parseInt(sizes[0]);
+                height = parseInt(sizes[1]);
+                if (height > 0 && width > 0) {
+                    this.sizes.push({width: width, height: height});
+                }
             }
         } else if (Array.isArray(size) && size.length > 0) {
             for (let s of size) {
                 this.addSize(s);
             }
         } else if (typeof size === 'object' && typeof size.width !== 'undefined' && typeof size.height !== 'undefined') {
-            width = size.width;
-            height = size.height;
-        }
-
-        height = parseInt(height);
-        width = parseInt(width);
-        if (height > 0 && width > 0) {
-            this.sizes.push({width: width, height: height});
+            size.width = parseInt(size.width);
+            size.height = parseInt(size.height);
+            if (size.width > 0 && size.height > 0) {
+                this.sizes.push(size);
+            }
         }
     }
 
